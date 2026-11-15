@@ -1,0 +1,105 @@
+# ==========================================================
+#   ScoreBounties - ScoreSMP item bounty system
+#   Physical items only. There is no economy and no money.
+# ==========================================================
+
+# Print extra information to the console (transactions, eligibility checks).
+debug: false
+
+database:
+  # SQLite file, relative to plugins/ScoreBounties/
+  file: "database/bounties.db"
+  backups:
+    enabled: true
+    # Make a backup when the server starts.
+    on-startup: true
+    # Hours between automatic backups while the server is running (0 = disabled).
+    interval-hours: 6
+    # How many backup files to keep in plugins/ScoreBounties/backups/
+    keep: 14
+
+gui:
+  # Date format used in menus and messages.
+  date-format: "dd/MM/yyyy"
+  date-time-format: "dd/MM/yyyy HH:mm"
+  # Maximum number of item lines shown on a bounty head in the main menu.
+  max-item-lines: 8
+  # Seconds a player has to type a name after clicking "Search".
+  search-timeout-seconds: 30
+  # Show "Contributed by <name>" under items in the bounty details menu.
+  show-contributor-in-details: true
+  # Seconds the "confirm replacement" button stays armed in /bounty set.
+  replace-confirm-seconds: 10
+
+restrictions:
+  # Allow placing a bounty on a player who is offline (they must have joined before).
+  allow-offline-targets: false
+  # Players with creative or spectator mode cannot open the deposit menu.
+  block-creative-deposits: true
+  # Seconds a player must wait between two confirmed deposits (0 = disabled).
+  deposit-cooldown-seconds: 5
+  # Maximum stacks a single deposit may contain (0 = no limit besides the menu size).
+  max-stacks-per-deposit: 0
+  # Maximum stacks one bounty may hold in total (0 = unlimited).
+  max-stacks-per-bounty: 0
+  # Materials that can never be put in a bounty.
+  blacklisted-materials: []
+  # Worlds where /bounty add and /bounty set cannot be used.
+  disabled-deposit-worlds: []
+
+self-bounty:
+  # Allow players to put a bounty on themselves.
+  allow: false
+
+kill-eligibility:
+  # The killer needs scorebounties.claim to receive bounty rewards.
+  require-claim-permission: true
+  # Only reward kills where the killer dealt the final damage (melee, projectile,
+  # end crystal, explosion they caused). Prevents rewarding deaths to fall damage,
+  # lava, the void and other environmental causes after a fight.
+  require-direct-kill: true
+  # Block rewards when killer and victim are connected from the same IP address
+  # (detects alternate accounts claiming a bounty).
+  block-same-ip: true
+  # Skip the IP check when an address is local (127.x, 192.168.x, 10.x ...). Behind a
+  # proxy without IP forwarding every player shares the proxy's local address, which
+  # would otherwise block every claim. Enable IP forwarding on your proxy for this check.
+  same-ip-ignore-local: true
+  # Minimum total playtime the killer must have, in minutes (0 = disabled).
+  minimum-killer-playtime-minutes: 0
+  # Worlds where bounties cannot be claimed.
+  disabled-worlds: []
+
+anti-farming:
+  # Minimum age a bounty must have before it can be claimed, in seconds.
+  minimum-bounty-age-seconds: 0
+  # A killer cannot claim another bounty on the same victim within this many minutes.
+  repeat-kill-cooldown-minutes: 30
+
+claims:
+  # Try to put rewards and returned items straight into the player's inventory.
+  # Anything that does not fit is kept safely in /bounty claim.
+  instant-delivery: true
+  # Automatically deliver stored items when a player joins (delay in seconds).
+  deliver-on-join: true
+  deliver-on-join-delay-seconds: 3
+  # Save the player's data right after items are delivered. Strongly recommended:
+  # it guarantees that delivered items are not lost if the server crashes.
+  save-player-data-on-delivery: true
+
+announcements:
+  # Broadcast when a bounty is placed or items are added.
+  bounty-placed: true
+  # Broadcast when a bounty is claimed.
+  bounty-claimed: true
+  # Play a sound to everyone online with the announcement.
+  sound:
+    enabled: true
+    placed: "minecraft:block.note_block.pling"
+    claimed: "minecraft:ui.toast.challenge_complete"
+    volume: 0.6
+    pitch: 1.2
+
+leaderboard:
+  # Number of entries shown by /bounty top.
+  size: 10

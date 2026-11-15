@@ -1,0 +1,137 @@
+# ==========================================================
+#   ScoreBounties messages
+#   Colors: &a, &l, ... and hex colors in the &#RRGGBB format.
+#   %prefix% is replaced with the prefix below in every message.
+#   Set a message to "" to disable it.
+# ==========================================================
+
+prefix: "&#00B2FF&lSCORESMP &#898989> "
+
+# ----- Broadcasts -----
+messages:
+  bounty-placed: "&#00B2FF&lSCORESMP &#898989> &#00A6FC%player% &7Put a Bounty on &#00A6FC%target%"
+  bounty-claimed: "&#00B2FF&lSCORESMP &#898989> &#00A6FC%killer% &7claimed the bounty on &#00A6FC%target%&7!"
+
+# ----- Depositing -----
+deposit:
+  placed: "%prefix%&7You placed a bounty of &f%amount% items &7on &#00A6FC%target%&7."
+  updated: "%prefix%&7You added &f%amount% items &7to the bounty on &#00A6FC%target%&7."
+  replaced: "%prefix%&7You replaced the bounty on &#00A6FC%target%&7. The previous contributors' items have been returned to them."
+  cancelled: "%prefix%&7Deposit cancelled. Your items have been returned."
+  empty: "%prefix%&cYou need to put at least one item in the menu to place a bounty."
+  failed: "%prefix%&cThe bounty could not be saved. Your items have been returned to you."
+  returned-to-claims: "%prefix%&7Some items did not fit in your inventory. Collect them with &#00A6FC/bounty claim&7."
+  blacklisted-item: "%prefix%&cYou cannot put &f%item% &cin a bounty."
+  too-many-stacks: "%prefix%&cA deposit can contain at most &f%max% &cstacks."
+  bounty-full: "%prefix%&cThis bounty is full. It can hold at most &f%max% &cstacks."
+  cooldown: "%prefix%&cPlease wait &f%seconds%s &cbefore placing another bounty."
+  creative-blocked: "%prefix%&cYou cannot place bounties in creative or spectator mode."
+  world-disabled: "%prefix%&cBounties cannot be placed in this world."
+  replace-warning: "%prefix%&#00A6FC%target% &7already has a bounty of &f%amount% items &7from &f%contributors% &7contributor(s). Confirming will &creplace &7it and return every previous contributor's items."
+  replace-confirm: "%prefix%&cClick confirm again within %seconds% seconds to replace the existing bounty."
+  target-invalid-now: "%prefix%&cThat bounty target is no longer valid. Your items have been returned."
+  busy: "%prefix%&cPlease wait, your previous request is still being processed."
+
+# ----- General -----
+general:
+  invalid-player: "%prefix%&cThe player &f%player% &chas never joined the server."
+  player-offline: "%prefix%&cThe player &f%player% &cmust be online to receive a bounty."
+  self-bounty-blocked: "%prefix%&cYou cannot place a bounty on yourself."
+  no-active-bounty: "%prefix%&#00A6FC%player% &7does not have an active bounty."
+  no-permission: "%prefix%&cYou do not have permission to do that."
+  player-only: "%prefix%&cOnly players can use this command."
+  unknown-subcommand: "%prefix%&cUnknown subcommand. Use &f/bounty help&c."
+  usage: "%prefix%&7Usage: &f%usage%"
+  database-error: "%prefix%&cA database error occurred. Your items are safe - please contact staff."
+  not-loaded: "%prefix%&7Your bounty data is still loading, please try again in a moment."
+
+# ----- Kills / rewards -----
+reward:
+  received: "%prefix%&7You received the bounty on &#00A6FC%target%&7: &f%amount% items&7."
+  stored: "%prefix%&f%count% &7stack(s) did not fit in your inventory and were stored. Use &#00A6FC/bounty claim&7."
+  not-eligible: "%prefix%&7You killed &#00A6FC%target%&7, but you cannot claim their bounty: &f%reason%"
+  reason-permission: "you do not have permission to claim bounties"
+  reason-same-ip: "you share an IP address with the target"
+  reason-playtime: "you need %minutes% minutes of playtime first"
+  reason-world: "bounties cannot be claimed in this world"
+  reason-cooldown: "you claimed a bounty on this player too recently"
+  reason-too-new: "the bounty is too new to be claimed"
+  reason-indirect: "the kill was not direct"
+  victim-notify: "%prefix%&#00A6FC%killer% &7claimed the bounty on you."
+
+# ----- Claims -----
+claim:
+  success: "%prefix%&7You collected &f%amount% &7item(s)."
+  partial: "%prefix%&7You collected &f%amount% &7item(s). &f%remaining% &7stack(s) are still waiting in &#00A6FC/bounty claim&7."
+  inventory-full: "%prefix%&cYour inventory is full. Free up some space and try again."
+  no-items: "%prefix%&7You have no items to claim."
+  waiting-on-join: "%prefix%&7You have &f%count% &7stack(s) of bounty items waiting. Use &#00A6FC/bounty claim&7."
+  delivered-on-join: "%prefix%&7Delivered &f%amount% &7stored bounty item(s) to your inventory."
+  contribution-returned: "%prefix%&7Your contribution to the bounty on &#00A6FC%target% &7was returned to you (&f%reason%&7)."
+  reason-replaced: "the bounty was replaced"
+  reason-removed: "the bounty was removed by staff"
+
+# ----- Search -----
+search:
+  prompt: "%prefix%&7Type the name of a player to search for, or &ccancel&7. You have &f%seconds%s&7."
+  cancelled: "%prefix%&7Search cancelled."
+  timeout: "%prefix%&7Search timed out."
+  no-results: "%prefix%&7No active bounty matches &f%query%&7."
+
+# ----- Admin -----
+admin:
+  reloaded: "%prefix%&7Configuration reloaded."
+  removed: "%prefix%&7Removed the bounty on &#00A6FC%target%&7. &f%amount% &7items were returned to &f%contributors% &7contributor(s)."
+  cleared: "%prefix%&7Cleared &f%count% &7bounties. Every item was returned to its contributor."
+  cleared-none: "%prefix%&7There are no active bounties to clear."
+  restored: "%prefix%&7Restored &f%amount% &7items to the bounty on &#00A6FC%target%&7."
+  restore-partial-note: "%prefix%&7&o%missing% stack(s) had already been collected by their contributors and could not be restored."
+  nothing-to-restore: "%prefix%&7There is nothing to restore for &#00A6FC%target%&7."
+  bounty-removed-broadcast: ""
+
+# ----- /bounty info -----
+info:
+  header: "&8&m                                        "
+  title: "&#00B2FF&lBOUNTY &8» &f%target%"
+  stats: "&7Items: &f%amount% &8| &7Stacks: &f%stacks% &8| &7Contributors: &f%contributors%"
+  dates: "&7Created: &f%created% &8| &7Updated: &f%updated%"
+  items-title: "&7Bounty Items:"
+  item-line: " &8- &f%amount%x %item%"
+  more-items: " &8- &7...and %count% more"
+  contributors-title: "&7Contributors: &f%names%"
+  footer: "&8&m                                        "
+
+# ----- /bounty top -----
+top:
+  header: "&8&m                                        "
+  title-items: "&#00B2FF&lBOUNTY TOP &8» &fMost bounty items"
+  title-contributions: "&#00B2FF&lBOUNTY TOP &8» &fMost contributions"
+  title-claimed: "&#00B2FF&lBOUNTY TOP &8» &fMost times claimed on"
+  title-hunters: "&#00B2FF&lBOUNTY TOP &8» &fMost bounties claimed"
+  line: " &#00A6FC#%rank% &f%player% &8- &7%value% %unit%"
+  unit-items: "items"
+  unit-contributions: "contributions"
+  unit-claimed: "times claimed"
+  unit-hunters: "bounties claimed"
+  empty: " &7No entries yet."
+  hint: "&7Other boards: &f/bounty top <items|contributions|claimed|hunters>"
+  footer: "&8&m                                        "
+
+# ----- /bounty help -----
+help:
+  - "&8&m                                        "
+  - "&#00B2FF&lSCORESMP BOUNTIES &8- &7Physical item bounties"
+  - "&#00A6FC/bounty &8- &7Open the bounty menu"
+  - "&#00A6FC/bounty add <player> &8- &7Add items to a player's bounty"
+  - "&#00A6FC/bounty set <player> &8- &7Replace a player's bounty"
+  - "&#00A6FC/bounty info <player> &8- &7View a player's bounty"
+  - "&#00A6FC/bounty top [board] &8- &7View the bounty leaderboard"
+  - "&#00A6FC/bounty claim &8- &7Collect stored bounty items"
+  - "&7Kill a player with a bounty to receive all of its items."
+  - "&8&m                                        "
+
+admin-help:
+  - "&#00A6FC/bounty admin reload &8- &7Reload configuration"
+  - "&#00A6FC/bounty admin remove <player> &8- &7Remove a bounty and return items"
+  - "&#00A6FC/bounty admin clear &8- &7Remove every bounty and return items"
+  - "&#00A6FC/bounty admin restore <player> &8- &7Restore an admin-removed bounty"

@@ -1,0 +1,310 @@
+# ==========================================================
+#   ScoreBounties menus
+#   - rows: 2-6. The bottom row is reserved for buttons; all other
+#     slots are used for content (heads, items or the deposit area).
+#   - slot: 0-based inventory slot (row * 9 + column).
+#   - material: any Bukkit material name.
+#   - Colors: &a, &l, ... and hex colors in the &#RRGGBB format.
+# ==========================================================
+
+# Shared look
+style:
+  filler:
+    material: GRAY_STAINED_GLASS_PANE
+  accent:
+    material: CYAN_STAINED_GLASS_PANE
+
+# ----------------------------------------------------------
+# /bounty  - list of active bounties
+# ----------------------------------------------------------
+main-menu:
+  title: "&#00B2FF&lBOUNTIES &8» &7Page %page%/%pages%"
+  rows: 6
+  accent-slots: []
+  bounty-head:
+    name: "&#00B2FF&l%target%"
+    lore:
+      - "&b&lBOUNTY"
+      - "&7Target: &f%target%"
+      - ""
+      - "&7Bounty Items:"
+      - "%items%"
+      - ""
+      - "&7Total Items: &f%amount% &8(&f%stacks% stacks&8)"
+      - "&7Contributors: &f%contributors%"
+      - "&7Last Updated: &f%updated%"
+      - ""
+      - "&bClick to view bounty"
+    item-line: "&f- %amount%x %item%"
+    more-items-line: "&7...and %count% more"
+  empty:
+    slot: 22
+    material: BARRIER
+    name: "&#00B2FF&lNo Active Bounties"
+    lore:
+      - "&7There are no bounties right now."
+      - "&7Use &#00A6FC/bounty add <player> &7to place one."
+  no-results:
+    slot: 22
+    material: BARRIER
+    name: "&#00B2FF&lNo Results"
+    lore:
+      - "&7No bounty matches &f%query%&7."
+      - "&7Right-click &fSearch &7to clear the filter."
+  buttons:
+    previous-page:
+      slot: 45
+      material: ARROW
+      name: "&#00B2FF&lPrevious Page"
+      lore:
+        - "&7Go to page &f%target_page%&7."
+    sort-newest:
+      slot: 46
+      material: CLOCK
+      name: "&#00B2FF&lSort: Newest"
+      lore:
+        - "&7Most recently updated bounties first."
+        - ""
+        - "%selected%"
+    sort-oldest:
+      slot: 47
+      material: COMPASS
+      name: "&#00B2FF&lSort: Oldest"
+      lore:
+        - "&7Oldest bounties first."
+        - ""
+        - "%selected%"
+    sort-items:
+      slot: 48
+      material: CHEST
+      name: "&#00B2FF&lSort: Most Items"
+      lore:
+        - "&7Bounties with the highest total"
+        - "&7item quantity first."
+        - ""
+        - "%selected%"
+    info:
+      slot: 49
+      material: NETHER_STAR
+      name: "&#00B2FF&lScoreSMP Bounties"
+      lore:
+        - "&7Active bounties: &f%bounties%"
+        - "&7Total bounty items: &f%total_items%"
+        - ""
+        - "&7Kill a target to receive every"
+        - "&7item on their bounty."
+        - ""
+        - "&#00A6FC/bounty add <player> &7to add items"
+    search:
+      slot: 50
+      material: NAME_TAG
+      name: "&#00B2FF&lSearch"
+      lore:
+        - "&7Current filter: &f%query%"
+        - ""
+        - "&bLeft-click &7to search for a player"
+        - "&bRight-click &7to clear the filter"
+    refresh:
+      slot: 51
+      material: SUNFLOWER
+      name: "&#00B2FF&lRefresh"
+      lore:
+        - "&7Reload the list of bounties."
+    claims:
+      slot: 52
+      material: ENDER_CHEST
+      name: "&#00B2FF&lYour Stored Items"
+      lore:
+        - "&7Stacks waiting for you: &f%claims%"
+        - ""
+        - "&bClick to open /bounty claim"
+    next-page:
+      slot: 53
+      material: ARROW
+      name: "&#00B2FF&lNext Page"
+      lore:
+        - "&7Go to page &f%target_page%&7."
+  selected-line: "&b▶ Selected"
+  not-selected-line: "&7Click to select"
+  no-query: "None"
+
+# ----------------------------------------------------------
+# Bounty details (click a head in the main menu)
+# ----------------------------------------------------------
+details-menu:
+  title: "&#00B2FF&lBOUNTY &8» &f%target%"
+  rows: 6
+  accent-slots: [46, 52]
+  contributor-line: "&8Contributed by &7%contributor%"
+  buttons:
+    back:
+      slot: 45
+      material: DARK_OAK_DOOR
+      name: "&#00B2FF&lBack"
+      lore:
+        - "&7Return to the bounty list."
+    contributors:
+      slot: 47
+      material: WRITABLE_BOOK
+      name: "&#00B2FF&lContributors &8(&f%contributors%&8)"
+      lore:
+        - "%names%"
+    previous-page:
+      slot: 48
+      material: ARROW
+      name: "&#00B2FF&lPrevious Page"
+      lore:
+        - "&7Go to page &f%target_page%&7."
+    summary:
+      slot: 49
+      material: PLAYER_HEAD
+      name: "&#00B2FF&l%target%"
+      lore:
+        - "&b&lBOUNTY"
+        - "&7Target: &f%target%"
+        - ""
+        - "&7Item Stacks: &f%stacks%"
+        - "&7Total Items: &f%amount%"
+        - "&7Contributors: &f%contributors%"
+        - ""
+        - "&7Created: &f%created%"
+        - "&7Updated: &f%updated%"
+    next-page:
+      slot: 50
+      material: ARROW
+      name: "&#00B2FF&lNext Page"
+      lore:
+        - "&7Go to page &f%target_page%&7."
+    add:
+      slot: 53
+      material: LIME_DYE
+      name: "&#00B2FF&lAdd to Bounty"
+      lore:
+        - "&7Add your own items to the"
+        - "&7bounty on &f%target%&7."
+        - ""
+        - "&bClick to open the deposit menu"
+
+# ----------------------------------------------------------
+# Deposit menu (/bounty add and /bounty set)
+# ----------------------------------------------------------
+deposit-menu:
+  title-add: "&#00B2FF&lADD BOUNTY &8» &f%target%"
+  title-set: "&#00B2FF&lSET BOUNTY &8» &f%target%"
+  rows: 6
+  accent-slots: [47, 51]
+  buttons:
+    cancel:
+      slot: 45
+      material: RED_STAINED_GLASS_PANE
+      name: "&c&lCancel"
+      lore:
+        - "&7Close the menu and get"
+        - "&7all of your items back."
+    info:
+      slot: 49
+      material: BOOK
+      name: "&#00B2FF&lHow Bounties Work"
+      lore:
+        - "&7Target: &f%target%"
+        - "&7Current bounty: &f%amount% items"
+        - ""
+        - "&7Place the items you want to offer in"
+        - "&7the empty slots above. You can take"
+        - "&7them back out until you confirm."
+        - ""
+        - "&7Whoever kills &f%target% &7receives"
+        - "&7every item on their bounty."
+        - ""
+        - "%mode_line%"
+    confirm:
+      slot: 53
+      material: LIME_STAINED_GLASS_PANE
+      name: "&a&lConfirm Bounty"
+      lore:
+        - "&7Place your items as a bounty"
+        - "&7on &f%target%&7."
+        - ""
+        - "&7Items in menu: &f%deposit_amount%"
+    confirm-replace:
+      slot: 53
+      material: ORANGE_STAINED_GLASS_PANE
+      name: "&6&lConfirm Replacement"
+      lore:
+        - "&cThis will replace the current"
+        - "&cbounty on &f%target%&c."
+        - ""
+        - "&7Every previous contributor will"
+        - "&7get their items back."
+        - ""
+        - "&eClick to arm, then click again"
+    confirm-replace-armed:
+      slot: 53
+      material: RED_STAINED_GLASS_PANE
+      name: "&c&lClick Again to Replace"
+      lore:
+        - "&7The existing bounty will be replaced"
+        - "&7and its items returned to their owners."
+  mode-add-line: "&#00A6FCYour items will be added to the bounty."
+  mode-set-line: "&cThis will REPLACE the existing bounty."
+
+# ----------------------------------------------------------
+# /bounty claim
+# ----------------------------------------------------------
+claim-menu:
+  title: "&#00B2FF&lSTORED ITEMS &8» &7Page %page%/%pages%"
+  rows: 6
+  accent-slots: [46, 52]
+  item-lore:
+    - ""
+    - "&8&m                    "
+    - "&7Source: &f%source%"
+    - "&7Stored: &f%date%"
+    - "&bClick to claim this item"
+  sources:
+    BOUNTY_REWARD: "Bounty on %reference%"
+    CONTRIBUTION_RETURN: "Returned from bounty on %reference%"
+    ADMIN_RETURN: "Removed bounty on %reference%"
+    DEPOSIT_RETURN: "Unfinished deposit on %reference%"
+  empty:
+    slot: 22
+    material: BARRIER
+    name: "&#00B2FF&lNothing to Claim"
+    lore:
+      - "&7You do not have any stored items."
+  buttons:
+    previous-page:
+      slot: 45
+      material: ARROW
+      name: "&#00B2FF&lPrevious Page"
+      lore:
+        - "&7Go to page &f%target_page%&7."
+    info:
+      slot: 48
+      material: BOOK
+      name: "&#00B2FF&lStored Items"
+      lore:
+        - "&7Stacks waiting: &f%claims%"
+        - "&7Total items: &f%amount%"
+        - ""
+        - "&7Rewards and returned items that did"
+        - "&7not fit in your inventory are kept"
+        - "&7here safely until you collect them."
+    claim-all:
+      slot: 49
+      material: HOPPER
+      name: "&a&lClaim All"
+      lore:
+        - "&7Move as many items as possible"
+        - "&7into your inventory."
+    close:
+      slot: 50
+      material: DARK_OAK_DOOR
+      name: "&#00B2FF&lClose"
+      lore: []
+    next-page:
+      slot: 53
+      material: ARROW
+      name: "&#00B2FF&lNext Page"
+      lore:
+        - "&7Go to page &f%target_page%&7."

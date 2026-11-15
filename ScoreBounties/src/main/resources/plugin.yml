@@ -1,0 +1,54 @@
+name: ScoreBounties
+version: '${project.version}'
+main: net.scoresmp.bounties.ScoreBounties
+api-version: '1.21.11'
+description: Item-based bounty system for ScoreSMP. Physical items only - no economy.
+authors: [ScoreSMP]
+website: scoresmp.net
+softdepend: [PlaceholderAPI]
+
+commands:
+  bounty:
+    description: Open the ScoreSMP bounty menu and manage item bounties.
+    usage: /<command> [add|set|info|top|claim|help|admin] [player]
+    aliases: [bountys]
+
+permissions:
+  scorebounties.use:
+    description: Open the bounty menu and view bounty details.
+    default: true
+  scorebounties.add:
+    description: Add items to a player's bounty with /bounty add.
+    default: true
+  scorebounties.set:
+    description: Replace a player's bounty with /bounty set.
+    default: true
+  scorebounties.info:
+    description: View bounty information with /bounty info.
+    default: true
+  scorebounties.top:
+    description: View the bounty leaderboard.
+    default: true
+  scorebounties.claim:
+    description: Receive bounty rewards and use /bounty claim.
+    default: true
+  scorebounties.admin.reload:
+    description: Reload the ScoreBounties configuration.
+    default: op
+  scorebounties.admin.remove:
+    description: Remove a player's bounty and return items to contributors.
+    default: op
+  scorebounties.admin.clear:
+    description: Remove every active bounty and return items to contributors.
+    default: op
+  scorebounties.admin.restore:
+    description: Restore an admin-removed bounty from items that have not been collected yet.
+    default: op
+  scorebounties.admin:
+    description: All ScoreBounties admin commands.
+    default: op
+    children:
+      scorebounties.admin.reload: true
+      scorebounties.admin.remove: true
+      scorebounties.admin.clear: true
+      scorebounties.admin.restore: true
