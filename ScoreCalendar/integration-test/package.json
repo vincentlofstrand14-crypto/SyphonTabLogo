@@ -1,0 +1,8 @@
+{
+  "name": "scorecalendar-integration-test",
+  "private": true,
+  "description": "End-to-end test: a bot plays through ScoreCalendar on a real Paper server",
+  "dependencies": {
+    "mineflayer": "4.39.0"
+  }
+}

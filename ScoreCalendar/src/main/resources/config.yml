@@ -1,0 +1,89 @@
+# ============================================================================
+#  ScoreCalendar - main configuration
+#  Calendars live in plugins/ScoreCalendar/calendars/<name>.yml
+#  Messages live in plugins/ScoreCalendar/messages.yml
+#  Apply changes with /calendar admin reload
+# ============================================================================
+
+# Calendar opened by /calendar.
+#   auto        -> the open calendar with the highest priority the player can use
+#   <name>      -> always this calendar (e.g. christmas)
+default-calendar: auto
+
+# Default timezone for calendars that do not set unlock.timezone.
+timezone: Europe/Stockholm
+
+# Parse MiniMessage tags (<gradient:#00B2FF:#FFFFFF>, <bold>, ...) in every text.
+# Legacy codes (&a, &l) and hex colors (&#00B2FF) always work.
+minimessage: true
+
+# How dates are shown in GUIs and messages (Java DateTimeFormatter pattern).
+date-format: "d MMM yyyy HH:mm"
+locale: en
+time-units:
+  day: "d"
+  hour: "h"
+  minute: "m"
+  second: "s"
+
+gui:
+  # Minimum time between two clicks in a GUI (prevents double-click spam).
+  click-cooldown-ms: 200
+  # Open calendars refresh every N seconds so countdowns and newly unlocked days update live. 0 = off.
+  live-update-seconds: 5
+
+delivery:
+  # Deliver rewards that are waiting (stored because of a full inventory, or because the player
+  # disconnected during a claim) automatically when the player joins.
+  auto-deliver-on-join: true
+  join-delay-ticks: 40
+  # Save the player's data right after giving reward items so a crash cannot lose them.
+  save-player-data-after-claim: true
+
+backups:
+  enabled: true
+  on-startup: true
+  # Before delete, reset and resetall a database backup is made.
+  before-destructive-actions: true
+  # Number of database backups kept in plugins/ScoreCalendar/backups
+  keep: 10
+
+features:
+  # /calendar rewards
+  rewards-command: true
+  # /calendar info
+  info-command: true
+
+editor:
+  chat-input-timeout-seconds: 60
+
+# /calendars menu
+calendars-menu:
+  title: "&#00B2FF&lCALENDARS &8(%page%/%pages%)"
+  size: 36
+  slots: "10-16,19-25"
+  background:
+    enabled: true
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+  # Default look for each calendar; each calendar's own "icon" section overrides these fields.
+  item:
+    material: CHEST
+    name: "%name%"
+    lore:
+      - "%calendar_description%"
+      - ""
+      - "&7Status: %status%"
+      - "&7Claimed: &f%days_claimed%&7/&f%days_total%"
+      - "&7Next reward: &f%next_unlock%"
+      - ""
+      - "&#00B2FFClick to open!"
+  close:
+    slot: 31
+
+# Stored rewards menu (/calendar collect)
+rewards-menu:
+  title: "&#00B2FF&lSTORED REWARDS &8(%page%/%pages%)"
+  size: 54
+
+debug: false

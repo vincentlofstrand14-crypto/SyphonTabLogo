@@ -1,0 +1,73 @@
+name: ScoreCalendar
+version: '${project.version}'
+main: net.scoresmp.calendar.ScoreCalendarPlugin
+api-version: '1.21'
+description: Fully customizable reward calendars for ScoreSMP
+author: ScoreSMP
+website: https://scoresmp.net
+softdepend: [PlaceholderAPI, LuckPerms]
+
+commands:
+  calendar:
+    description: Open a calendar, view rewards or administrate calendars
+    usage: /calendar [name|rewards|collect|info|help|admin]
+    aliases: [cal, advent]
+  calendars:
+    description: Open the list of all calendars
+    usage: /calendars
+
+permissions:
+  scorecalendar.use:
+    description: Use /calendar, /calendar rewards, /calendar collect and /calendar info
+    default: true
+  scorecalendar.open:
+    description: Open calendars by name and use /calendars
+    default: true
+  scorecalendar.admin:
+    description: Access /calendar admin (each action needs its own permission below)
+    default: op
+  scorecalendar.admin.create:
+    description: Create calendars
+    default: op
+  scorecalendar.admin.delete:
+    description: Delete calendars
+    default: op
+  scorecalendar.admin.edit:
+    description: Open the calendar edit menu
+    default: op
+  scorecalendar.admin.editor:
+    description: Use the visual GUI editor, reward editor and item editor
+    default: op
+  scorecalendar.admin.reload:
+    description: Reload configuration, create backups and view configuration problems
+    default: op
+  scorecalendar.admin.give:
+    description: Give a day's reward to a player
+    default: op
+  scorecalendar.admin.reset:
+    description: Reset or set a player's progress and view player history
+    default: op
+  scorecalendar.admin.resetall:
+    description: Reset everyone's progress in a calendar
+    default: op
+  scorecalendar.admin.preview:
+    description: Preview calendars without claiming
+    default: op
+  scorecalendar.admin.unlock:
+    description: Open/close calendars and manually unlock/lock days
+    default: op
+  scorecalendar.admin.*:
+    description: All administrator permissions (for staff groups only)
+    default: op
+    children:
+      scorecalendar.admin: true
+      scorecalendar.admin.create: true
+      scorecalendar.admin.delete: true
+      scorecalendar.admin.edit: true
+      scorecalendar.admin.editor: true
+      scorecalendar.admin.reload: true
+      scorecalendar.admin.give: true
+      scorecalendar.admin.reset: true
+      scorecalendar.admin.resetall: true
+      scorecalendar.admin.preview: true
+      scorecalendar.admin.unlock: true

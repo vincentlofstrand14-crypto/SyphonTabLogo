@@ -1,0 +1,71 @@
+# ============================================================================
+#  ScoreCalendar example: Weekly calendar (type WEEKLY)
+#  One reward per weekday (Monday = day 1). All claims reset every Monday.
+# ============================================================================
+enabled: true
+display-name: "&d&lWEEKLY REWARDS"
+description:
+  - "&7A reward for every day of the week."
+type: WEEKLY
+days: 7
+priority: 5
+icon:
+  material: AMETHYST_SHARD
+  name: "&d&lWeekly Rewards"
+
+unlock:
+  timezone: Europe/Stockholm
+  start-time: "00:00"
+  week-start: MONDAY
+
+claiming:
+  # Missed weekdays can still be claimed until the week ends
+  claim-window: unlimited
+  reset: WEEKLY
+
+gui:
+  title: "&d&lWEEKLY REWARDS"
+  size: 27
+  day-slots: "10-16"
+  background:
+    enabled: true
+    material: PURPLE_STAINED_GLASS_PANE
+    name: " "
+  items:
+    close:
+      slot: 22
+      material: BARRIER
+      name: "&cClose"
+      actions: ["CLOSE"]
+
+day-items:
+  locked:
+    material: GRAY_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&7&l%reward_name%"
+    lore: ["&7Unlocks in &f%unlock_countdown%"]
+  available:
+    material: MAGENTA_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&d&l%reward_name%"
+    glow: true
+    lore: ["&aClick to claim!"]
+  claimed:
+    material: PURPLE_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&5&l%reward_name%"
+    lore: ["&7Claimed this week"]
+
+rewards:
+  day-1: {name: "Monday", items: [{material: COAL, amount: 16}]}
+  day-2: {name: "Tuesday", items: [{material: IRON_INGOT, amount: 8}]}
+  day-3: {name: "Wednesday", items: [{material: GOLD_INGOT, amount: 6}]}
+  day-4: {name: "Thursday", items: [{material: REDSTONE, amount: 32}]}
+  day-5: {name: "Friday", items: [{material: EMERALD, amount: 8}]}
+  day-6: {name: "Saturday", items: [{material: DIAMOND, amount: 2}]}
+  day-7: {name: "Sunday", items: [{material: DIAMOND, amount: 3}, {material: GOLDEN_APPLE, amount: 1}]}
+
+effects:
+  claim:
+    sound: {type: BLOCK_AMETHYST_BLOCK_CHIME, volume: 1.0, pitch: 1.2}
+    particles: {type: END_ROD, count: 20}

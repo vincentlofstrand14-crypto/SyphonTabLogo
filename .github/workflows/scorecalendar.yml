@@ -1,0 +1,48 @@
+name: ScoreCalendar
+
+on:
+  push:
+    paths:
+      - "ScoreCalendar/**"
+      - ".github/workflows/scorecalendar.yml"
+  workflow_dispatch:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+
+      - name: Build and unit-test against the real Paper 1.21.11 API
+        working-directory: ScoreCalendar
+        run: mvn -B package
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ScoreCalendar-jar
+          path: ScoreCalendar/target/ScoreCalendar.jar
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: End-to-end test on a real Paper 1.21.11 server
+        working-directory: ScoreCalendar/integration-test
+        run: bash run.sh
+
+      - name: Upload server logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-logs
+          path: |
+            ScoreCalendar/integration-test/work/*.log
+            ScoreCalendar/integration-test/work/plugins/ScoreCalendar/calendars/
+          if-no-files-found: ignore

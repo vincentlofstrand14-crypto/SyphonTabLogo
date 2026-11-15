@@ -1,0 +1,84 @@
+# ============================================================================
+#  ScoreCalendar example: Daily login rewards (type DAILY)
+#  Every real day a player can claim the next reward of their own 7-day streak.
+#  After day 7 the streak starts again at day 1.
+# ============================================================================
+enabled: true
+display-name: "&a&lDAILY REWARDS"
+description:
+  - "&7Claim a reward every day!"
+  - "&7Bigger rewards for longer streaks."
+type: DAILY
+days: 7
+priority: 10
+icon:
+  material: CLOCK
+  name: "&a&lDaily Rewards"
+
+unlock:
+  timezone: Europe/Stockholm
+  # Rewards reset every day at this time
+  start-time: "00:00"
+
+claiming:
+  daily:
+    # true = missing a day sends the player back to day 1
+    reset-on-miss: false
+    # true = after the last day the streak starts again
+    restart-when-complete: true
+
+gui:
+  title: "&a&lDAILY REWARDS"
+  size: 27
+  day-slots: "10-16"
+  background:
+    enabled: true
+    material: GRAY_STAINED_GLASS_PANE
+    name: " "
+  items:
+    info:
+      slot: 4
+      material: CLOCK
+      name: "&a&lYOUR STREAK"
+      lore:
+        - "&7Day &f%days_claimed%&7/&f%days_total%"
+        - "&7Next reward in: &f%next_unlock%"
+    close:
+      slot: 22
+      material: BARRIER
+      name: "&cClose"
+      actions: ["CLOSE"]
+
+day-items:
+  locked:
+    material: RED_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&7&lDAY %day%"
+    lore: ["&7Reward: &f%reward_name%", "", "&cNot yet"]
+  available:
+    material: LIME_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&a&lDAY %day%"
+    glow: true
+    lore: ["&7Reward: &f%reward_name%", "", "&aClick to claim today's reward!"]
+  claimed:
+    material: GREEN_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&2&lDAY %day%"
+    lore: ["&7Claimed"]
+
+rewards:
+  day-1: {name: "5 Iron Ingots", items: [{material: IRON_INGOT, amount: 5}]}
+  day-2: {name: "3 Gold Ingots", items: [{material: GOLD_INGOT, amount: 3}]}
+  day-3: {name: "8 Emeralds", items: [{material: EMERALD, amount: 8}]}
+  day-4: {name: "Golden Apple", items: [{material: GOLDEN_APPLE, amount: 1}]}
+  day-5: {name: "2 Diamonds", items: [{material: DIAMOND, amount: 2}]}
+  day-6: {name: "16 Bottles o' Enchanting", items: [{material: EXPERIENCE_BOTTLE, amount: 16}]}
+  day-7: {name: "5 Diamonds + 10 levels", items: [{material: DIAMOND, amount: 5}], commands: ["xp add %player% 10 levels"]}
+
+effects:
+  claim:
+    sound: {type: ENTITY_EXPERIENCE_ORB_PICKUP}
+    actionbar: {message: "&aDaily reward claimed! &7Come back tomorrow."}
+  locked:
+    sound: {type: BLOCK_NOTE_BLOCK_BASS, pitch: 0.6}

@@ -1,0 +1,159 @@
+# ============================================================================
+#  ScoreCalendar example: Halloween calendar (14 days, 36-slot GUI)
+# ============================================================================
+enabled: true
+display-name: "&6&lHALLOWEEN CALENDAR"
+description:
+  - "&7Two spooky weeks of treats!"
+type: SEASONAL
+days: 14
+priority: 60
+icon:
+  material: JACK_O_LANTERN
+  name: "&6&lHalloween Calendar"
+
+unlock:
+  type: DAILY
+  timezone: Europe/Stockholm
+  start-date: "2027-10-18"
+  start-time: "18:00"
+  end-date: "2027-10-31"
+
+claiming:
+  # Each day can only be claimed within 24 hours of unlocking
+  claim-window: 24h
+  reset: NEVER
+
+gui:
+  title: "&6&l🎃 HALLOWEEN 🎃"
+  size: 36
+  day-slots: "10-16,19-25"
+  background:
+    enabled: true
+    material: ORANGE_STAINED_GLASS_PANE
+    name: " "
+  items:
+    corners:
+      slots: "0,8,27,35"
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+    close:
+      slot: 31
+      material: BARRIER
+      name: "&cClose"
+      actions: ["CLOSE"]
+
+day-items:
+  locked:
+    material: GRAY_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&7&lNIGHT %day%"
+    lore: ["&7Opens in &f%unlock_countdown%"]
+  available:
+    material: PUMPKIN
+    amount: "%day%"
+    name: "&6&lNIGHT %day%"
+    lore: ["&7Treat: &f%reward_name%", "&7Claim within 24h of unlocking!", "", "&aClick to claim!"]
+  claimed:
+    material: CARVED_PUMPKIN
+    amount: "%day%"
+    name: "&8&lNIGHT %day%"
+    lore: ["&7Claimed"]
+  missed:
+    material: SKELETON_SKULL
+    amount: 1
+    name: "&8&lNIGHT %day%"
+    lore: ["&7Too late... the treat is gone."]
+
+day-styles:
+  spooky:
+    available:
+      material: JACK_O_LANTERN
+      glow: true
+
+rewards:
+  day-1:
+    name: "16x Pumpkin Pie"
+    items:
+      - material: PUMPKIN_PIE
+        amount: 16
+  day-2:
+    name: "4x Carved Pumpkin"
+    items:
+      - material: CARVED_PUMPKIN
+        amount: 4
+  day-3:
+    name: "32x Bone"
+    items:
+      - material: BONE
+        amount: 32
+  day-4:
+    name: "4x Diamond"
+    items:
+      - material: DIAMOND
+        amount: 4
+  day-5:
+    name: "12x Emerald"
+    items:
+      - material: EMERALD
+        amount: 12
+  day-6:
+    name: "3x Golden Apple"
+    items:
+      - material: GOLDEN_APPLE
+        amount: 3
+  day-7:
+    name: "8x Ender Pearl"
+    items:
+      - material: ENDER_PEARL
+        amount: 8
+  day-8:
+    name: "8x Jack O Lantern"
+    items:
+      - material: JACK_O_LANTERN
+        amount: 8
+  day-9:
+    name: "32x Experience Bottle"
+    items:
+      - material: EXPERIENCE_BOTTLE
+        amount: 32
+  day-10:
+    name: "1x Wither Skeleton Skull"
+    items:
+      - material: WITHER_SKELETON_SKULL
+        amount: 1
+  day-11:
+    name: "8x Diamond"
+    items:
+      - material: DIAMOND
+        amount: 8
+  day-12:
+    name: "1x Totem Of Undying"
+    items:
+      - material: TOTEM_OF_UNDYING
+        amount: 1
+  day-13:
+    name: "1x Netherite Ingot"
+    items:
+      - material: NETHERITE_INGOT
+        amount: 1
+  day-14:
+    name: "1x Enchanted Golden Apple"
+    items:
+      - material: ENCHANTED_GOLDEN_APPLE
+        amount: 1
+
+# Optional per-day settings: style, permission, unlock (date override) and appearance overrides.
+day-settings:
+  7:
+    style: spooky
+  14:
+    style: spooky
+
+effects:
+  claim:
+    sound: {type: ENTITY_WITCH_CELEBRATE}
+    particles: {type: SOUL, count: 40}
+    title: {title: "&6&lTRICK OR TREAT!", subtitle: "&7Night %day% claimed"}
+  locked:
+    sound: {type: ENTITY_GHAST_AMBIENT, volume: 0.3}

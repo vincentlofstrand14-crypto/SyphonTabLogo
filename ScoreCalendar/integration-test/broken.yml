@@ -1,0 +1,35 @@
+# Deliberately broken calendar used by the integration test to check error reporting.
+enabled: true
+display-name: "Broken"
+days: 5
+unlock:
+  type: DAILY
+  timezone: Mars/Olympus
+  start-date: "2026-13-40"
+gui:
+  size: 50
+  day-slots: "10-14"
+  items:
+    bad-button:
+      slot: 70
+      material: NOT_A_MATERIAL
+      actions:
+        - "FLY_TO_THE_MOON"
+        - "OPEN_MENU:does-not-exist"
+day-items:
+  available:
+    material: DIAMOND_SWORDD
+rewards:
+  day-1:
+    items:
+      - material: SUPER_DIAMOND
+        amount: 5
+  day-9:
+    items:
+      - material: DIAMOND
+effects:
+  claim:
+    sound:
+      type: NOT_A_SOUND
+    particles:
+      type: NOT_A_PARTICLE

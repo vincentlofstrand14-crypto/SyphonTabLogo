@@ -1,0 +1,255 @@
+# ============================================================================
+#  ScoreCalendar example: Summer calendar (30 days, two pages)
+#  Shows a SEASONAL calendar whose days continue on a second page with navigation buttons.
+# ============================================================================
+enabled: true
+display-name: "&e&lSUMMER CALENDAR"
+description:
+  - "&730 days of summer rewards!"
+type: SEASONAL
+days: 30
+priority: 50
+icon:
+  material: SUNFLOWER
+  name: "&e&lSummer Calendar"
+
+unlock:
+  type: DAILY
+  timezone: Europe/Stockholm
+  start-date: "2027-06-15"
+  start-time: "12:00"
+  end-date: "2027-07-14"
+
+claiming:
+  claim-window: unlimited
+  reset: NEVER
+
+gui:
+  title: "&e&lSUMMER CALENDAR &8(%page%/%pages%)"
+  size: 54
+  # 28 slots per page: days 29 and 30 continue on page 2
+  day-slots: "10-16,19-25,28-34,37-43"
+  background:
+    enabled: true
+    material: YELLOW_STAINED_GLASS_PANE
+    name: " "
+  items:
+    previous-page:
+      slot: 48
+      material: ARROW
+      name: "&e&l« PREVIOUS PAGE"
+      lore: ["&7Page %page%/%pages%"]
+      visible: HAS_PREVIOUS_PAGE
+      actions: ["PREVIOUS_PAGE", "SOUND:ITEM_BOOK_PAGE_TURN"]
+    next-page:
+      slot: 50
+      material: ARROW
+      name: "&e&lNEXT PAGE »"
+      lore: ["&7Page %page%/%pages%"]
+      visible: HAS_NEXT_PAGE
+      actions: ["NEXT_PAGE", "SOUND:ITEM_BOOK_PAGE_TURN"]
+    close:
+      slot: 49
+      material: BARRIER
+      name: "&cClose"
+      actions: ["CLOSE"]
+    rewards:
+      slot: 53
+      material: CHEST_MINECART
+      name: "&e&lALL REWARDS"
+      actions: ["OPEN_MENU:rewards"]
+
+day-items:
+  locked:
+    material: WHITE_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&7&lDAY %day%"
+    lore: ["&7Unlocks in &f%unlock_countdown%", "", "&cLocked"]
+  available:
+    material: ORANGE_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&e&lDAY %day%"
+    glow: true
+    lore: ["&7Reward: &f%reward_name%", "", "&aClick to claim!"]
+  claimed:
+    material: LIGHT_BLUE_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&b&lDAY %day%"
+    lore: ["&7Claimed"]
+
+day-styles:
+  special:
+    available:
+      material: SUNFLOWER
+      name: "&6&lMIDSUMMER - DAY %day%"
+
+rewards:
+  day-1:
+    name: "3x Diamond"
+    items:
+      - material: DIAMOND
+        amount: 3
+  day-2:
+    name: "10x Emerald"
+    items:
+      - material: EMERALD
+        amount: 10
+  day-3:
+    name: "32x Melon Slice"
+    items:
+      - material: MELON_SLICE
+        amount: 32
+  day-4:
+    name: "2x Golden Apple"
+    items:
+      - material: GOLDEN_APPLE
+        amount: 2
+  day-5:
+    name: "16x Experience Bottle"
+    items:
+      - material: EXPERIENCE_BOTTLE
+        amount: 16
+  day-6:
+    name: "1x Tropical Fish Bucket"
+    items:
+      - material: TROPICAL_FISH_BUCKET
+        amount: 1
+  day-7:
+    name: "32x Cooked Salmon"
+    items:
+      - material: COOKED_SALMON
+        amount: 32
+  day-8:
+    name: "8x Ender Pearl"
+    items:
+      - material: ENDER_PEARL
+        amount: 8
+  day-9:
+    name: "4x Sponge"
+    items:
+      - material: SPONGE
+        amount: 4
+  day-10:
+    name: "3x Turtle Scute"
+    items:
+      - material: TURTLE_SCUTE
+        amount: 3
+  day-11:
+    name: "5x Diamond"
+    items:
+      - material: DIAMOND
+        amount: 5
+  day-12:
+    name: "32x Prismarine Shard"
+    items:
+      - material: PRISMARINE_SHARD
+        amount: 32
+  day-13:
+    name: "2x Nautilus Shell"
+    items:
+      - material: NAUTILUS_SHELL
+        amount: 2
+  day-14:
+    name: "20x Emerald"
+    items:
+      - material: EMERALD
+        amount: 20
+  day-15:
+    name: "Midsummer Bundle"
+    items:
+      - material: GOLDEN_CARROT
+        amount: 32
+      - material: DIAMOND
+        amount: 4
+    commands:
+      - "xp add %player% 20 levels"
+  day-16:
+    name: "1x Heart Of The Sea"
+    items:
+      - material: HEART_OF_THE_SEA
+        amount: 1
+  day-17:
+    name: "32x Experience Bottle"
+    items:
+      - material: EXPERIENCE_BOTTLE
+        amount: 32
+  day-18:
+    name: "2x Netherite Scrap"
+    items:
+      - material: NETHERITE_SCRAP
+        amount: 2
+  day-19:
+    name: "16x Sea Lantern"
+    items:
+      - material: SEA_LANTERN
+        amount: 16
+  day-20:
+    name: "4x Golden Apple"
+    items:
+      - material: GOLDEN_APPLE
+        amount: 4
+  day-21:
+    name: "8x Diamond"
+    items:
+      - material: DIAMOND
+        amount: 8
+  day-22:
+    name: "2x End Crystal"
+    items:
+      - material: END_CRYSTAL
+        amount: 2
+  day-23:
+    name: "16x Ender Pearl"
+    items:
+      - material: ENDER_PEARL
+        amount: 16
+  day-24:
+    name: "2x Emerald Block"
+    items:
+      - material: EMERALD_BLOCK
+        amount: 2
+  day-25:
+    name: "1x Totem Of Undying"
+    items:
+      - material: TOTEM_OF_UNDYING
+        amount: 1
+  day-26:
+    name: "2x Diamond Block"
+    items:
+      - material: DIAMOND_BLOCK
+        amount: 2
+  day-27:
+    name: "1x Enchanted Golden Apple"
+    items:
+      - material: ENCHANTED_GOLDEN_APPLE
+        amount: 1
+  day-28:
+    name: "1x Netherite Ingot"
+    items:
+      - material: NETHERITE_INGOT
+        amount: 1
+  day-29:
+    name: "1x Elytra"
+    items:
+      - material: ELYTRA
+        amount: 1
+  day-30:
+    name: "2x Netherite Ingot"
+    items:
+      - material: NETHERITE_INGOT
+        amount: 2
+
+# Optional per-day settings: style, permission, unlock (date override) and appearance overrides.
+day-settings:
+  15:
+    style: special
+
+effects:
+  open:
+    sound: {type: BLOCK_BARREL_OPEN, volume: 0.6}
+  claim:
+    sound: {type: ENTITY_PLAYER_LEVELUP}
+    particles: {type: HAPPY_VILLAGER, count: 30}
+    title: {title: "&e&lREWARD CLAIMED!", subtitle: "&7Day %day% of summer"}
+  locked:
+    sound: {type: BLOCK_NOTE_BLOCK_BASS, pitch: 0.6}

@@ -1,0 +1,564 @@
+# ============================================================================
+#  ScoreCalendar example: Christmas advent calendar (24 days)
+#  The file name (christmas.yml) is the calendar name: /calendar christmas
+#  Every value can be changed. Apply changes with /calendar admin reload
+# ============================================================================
+
+enabled: true
+display-name: "<gradient:#00B2FF:#FFFFFF><bold>CHRISTMAS CALENDAR</bold></gradient>"
+description:
+  - "&7Open one door every day"
+  - "&7from &f1 December &7to &f24 December&7!"
+# ADVENT, SEASONAL, CUSTOM, DAILY or WEEKLY
+type: ADVENT
+days: 24
+# Higher priority wins when several calendars are open and /calendar uses "auto".
+priority: 100
+# Optional permission needed to open/claim (empty = everyone)
+permission: ""
+# Optional LuckPerms groups (any of them) needed to open/claim
+required-groups: []
+
+# Icon in /calendars and the admin menu
+icon:
+  material: SPRUCE_SAPLING
+  name: "&#00B2FF&lChristmas Calendar"
+  lore:
+    - "%calendar_description%"
+    - ""
+    - "&7Status: %status%"
+    - "&7Claimed: &f%days_claimed%&7/&f%days_total%"
+    - "&7Next door opens in: &f%next_unlock%"
+    - ""
+    - "&#00B2FFClick to open!"
+  glow: true
+
+# ---------------------------------------------------------------- unlocking
+unlock:
+  # DAILY: day N unlocks N-1 days after start-date at start-time
+  type: DAILY
+  timezone: Europe/Stockholm
+  start-date: "2026-12-01"
+  start-time: "00:00"
+  end-date: "2026-12-24"
+  # Players may still claim days they missed until this moment:
+  claim-until: "2026-12-26 23:59"
+
+claiming:
+  # How long a day can be claimed after it unlocks ("unlimited", "24h", "2d"...)
+  claim-window: unlimited
+  # NEVER = every door once. DAILY/WEEKLY/MONTHLY = rewards can be claimed again after a reset.
+  reset: NEVER
+  # true = days must be claimed in order
+  require-sequential: false
+
+# ---------------------------------------------------------------- GUI
+gui:
+  # %page% and %pages% are available in the title
+  title: "&#00B2FF&l❄ CHRISTMAS CALENDAR ❄"
+  type: CHEST
+  size: 54
+  # Let players look at the calendar before it opens (days show as locked)
+  view-when-closed: true
+  # Days fill these slots in order (24 slots for 24 days)
+  day-slots: "10-16,19-25,28-34,39-41"
+
+  background:
+    enabled: true
+    material: BLACK_STAINED_GLASS_PANE
+    name: " "
+    fill-empty-slots: true
+
+  items:
+    # ---- moving single days: day-<number> with a slot (and optional page)
+    day-23:
+      slot: 41
+    day-24:
+      slot: 40
+
+    # ---- decorations (no actions)
+    border-top:
+      slots: "0-3,5-8"
+      material: RED_STAINED_GLASS_PANE
+      name: " "
+    border-sides:
+      slots: "9,17,18,26,27,35,36,44"
+      material: GREEN_STAINED_GLASS_PANE
+      name: " "
+    star:
+      slot: 4
+      material: NETHER_STAR
+      name: "<gradient:#FFD700:#FFFFFF><bold>MERRY CHRISTMAS</bold></gradient>"
+      lore:
+        - "&7from everyone at &#00B2FF&lScoreSMP"
+      glow: true
+    snow-left:
+      slots: "37,38"
+      material: SNOW_BLOCK
+      name: "&f❄"
+    snow-right:
+      slots: "42,43"
+      material: SNOW_BLOCK
+      name: "&f❄"
+
+    # ---- buttons
+    information:
+      slot: 45
+      material: BOOK
+      name: "&#00B2FF&lINFORMATION"
+      lore:
+        - "&7Click to see how the calendar works."
+      actions:
+        - "OPEN_MENU:information"
+        - "SOUND:UI_BUTTON_CLICK:0.6:1.2"
+    progress:
+      slot: 46
+      material: PLAYER_HEAD
+      head-owner: "%player%"
+      name: "&#00B2FF&lYOUR PROGRESS"
+      lore:
+        - "&7Claimed: &f%days_claimed%&7/&f%days_total% &8(%progress%%)"
+        - "&7Next door: &fDay %next_day% &7in &f%next_unlock%"
+        - ""
+        - "&#00B2FFClick for details"
+      actions:
+        - "OPEN_MENU:progress"
+    website:
+      slot: 47
+      material: PAPER
+      name: "&b&lVISIT OUR WEBSITE"
+      lore:
+        - "&7Click to get the link in chat."
+      actions:
+        - "MESSAGE:%prefix%&7Visit &#00B2FFscoresmp.net &7for news and the store!"
+        - "CLOSE"
+    close:
+      slot: 49
+      material: BARRIER
+      name: "&cClose"
+      actions:
+        - "CLOSE"
+    stored:
+      slot: 51
+      material: HOPPER
+      name: "&e&lSTORED REWARDS"
+      lore:
+        - "&7You have &f%stored_rewards% &7reward(s) that did"
+        - "&7not fit in your inventory."
+        - ""
+        - "&#00B2FFClick to collect"
+      # Only shown while the player has stored rewards
+      visible: HAS_PENDING_REWARDS
+      actions:
+        - "COLLECT_REWARDS"
+    rewards:
+      slot: 52
+      material: CHEST_MINECART
+      name: "&#00B2FF&lALL REWARDS"
+      lore:
+        - "&7See every reward of this calendar."
+      actions:
+        - "OPEN_MENU:rewards"
+    calendars:
+      slot: 53
+      material: COMPASS
+      name: "&#00B2FF&lOTHER CALENDARS"
+      actions:
+        - "OPEN_MENU:calendars"
+    bottom:
+      slots: "48,50"
+      material: RED_STAINED_GLASS_PANE
+      name: " "
+
+# ---------------------------------------------------------------- day appearance
+# Placeholders: %day% %reward_name% %reward_status% %reward_items% %reward_lore%
+#   %unlock_date% %unlock_countdown% %days_claimed% %days_total% %player% ...
+day-items:
+  locked:
+    material: GRAY_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&7&lDAY %day%"
+    lore:
+      - "&7This door is still closed."
+      - ""
+      - "&7Opens: &f%unlock_date%"
+      - "&7In: &f%unlock_countdown%"
+      - ""
+      - "&cLocked"
+  available:
+    material: LIME_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&#00B2FF&lDAY %day%"
+    glow: true
+    lore:
+      - "&7Click to claim your reward!"
+      - ""
+      - "&7Reward: &f%reward_name%"
+      - "%reward_items%"
+      - ""
+      - "&aAvailable &8| &7Right-click to preview"
+  claimed:
+    material: RED_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&c&lDAY %day%"
+    lore:
+      - "&7You have already claimed this reward."
+      - ""
+      - "&cAlready claimed"
+  missed:
+    material: BLACK_STAINED_GLASS_PANE
+    amount: "%day%"
+    name: "&8&lDAY %day%"
+    lore:
+      - "&7This door can no longer be opened."
+      - ""
+      - "&8Missed"
+
+# Named styles that change parts of the appearance for selected days (days.<n>.style)
+day-styles:
+  special:
+    locked:
+      material: CYAN_STAINED_GLASS_PANE
+      name: "&b&lDAY %day% &7(special)"
+    available:
+      material: NETHER_STAR
+      name: "&b&lDAY %day% &f- SPECIAL REWARD"
+      glow: true
+  premium:
+    locked:
+      material: LIGHT_BLUE_STAINED_GLASS_PANE
+      name: "<gradient:#00B2FF:#FFFFFF><bold>DAY %day% - CHRISTMAS EVE</bold></gradient>"
+    available:
+      material: DIAMOND_BLOCK
+      amount: 1
+      name: "<gradient:#00B2FF:#FFFFFF><bold>DAY %day% - CHRISTMAS EVE</bold></gradient>"
+      glow: true
+    claimed:
+      material: DIAMOND_BLOCK
+      amount: 1
+      name: "&c&lDAY %day% &7- claimed"
+      glow: false
+
+# ---------------------------------------------------------------- rewards
+# Rewards per day (day-1 ... day-24). Per-day style/permission/unlock overrides are under day-settings.
+# A reward may contain items, commands, or both. Commands run from the console exactly once.
+rewards:
+  day-1:
+    name: "5 Diamonds"
+    lore:
+      - "&7A sparkling start to December!"
+    items:
+      - material: DIAMOND
+        amount: 5
+  day-2:
+    name: "16 Emeralds"
+    items:
+      - material: EMERALD
+        amount: 16
+  day-3:
+    name: "Golden Apples"
+    items:
+      - material: GOLDEN_APPLE
+        amount: 4
+  day-4:
+    name: "Bottles o' Enchanting"
+    items:
+      - material: EXPERIENCE_BOTTLE
+        amount: 32
+  day-5:
+    name: "2 End Crystals"
+    items:
+      - material: END_CRYSTAL
+        amount: 2
+  day-6:
+    name: "Totem of Undying"
+    lore:
+      - "&7A second chance for the holidays."
+    items:
+      - material: TOTEM_OF_UNDYING
+        amount: 1
+    effects:
+      sound:
+        type: ITEM_TOTEM_USE
+        volume: 0.6
+        pitch: 1.4
+      particles:
+        type: TOTEM_OF_UNDYING
+        count: 60
+  day-7:
+    name: "Christmas Cookies"
+    items:
+      - material: COOKIE
+        amount: 64
+        name: "&6&lChristmas Cookie"
+        lore:
+          - "&7Freshly baked by Santa."
+  day-8:
+    name: "Netherite Ingot"
+    items:
+      - material: NETHERITE_INGOT
+        amount: 1
+  day-9:
+    name: "Fireworks"
+    items:
+      - material: FIREWORK_ROCKET
+        amount: 32
+  day-10:
+    name: "Enchanted Golden Apple"
+    items:
+      - material: ENCHANTED_GOLDEN_APPLE
+        amount: 1
+  day-11:
+    name: "30 Levels + Speed"
+    lore:
+      - "&7A command reward: 30 XP levels"
+      - "&7and 5 minutes of speed."
+    commands:
+      - "xp add %player% 30 levels"
+      - "effect give %player% minecraft:speed 300 1"
+  day-12:
+    name: "Frostbite Sword"
+    items:
+      - material: DIAMOND_SWORD
+        amount: 1
+        name: "&#00B2FF&lFrostbite"
+        lore:
+          - "&7Forged in the ice of the north."
+          - ""
+          - "&8ScoreSMP Christmas 2026"
+        enchantments:
+          sharpness: 5
+          unbreaking: 3
+          looting: 3
+        unbreakable: false
+  day-13:
+    name: "3 Diamond Blocks"
+    items:
+      - material: DIAMOND_BLOCK
+        amount: 3
+  day-14:
+    name: "Shulker Shells"
+    items:
+      - material: SHULKER_SHELL
+        amount: 2
+  day-15:
+    name: "Golden Carrots"
+    items:
+      - material: GOLDEN_CARROT
+        amount: 32
+  day-16:
+    name: "Santa's Pickaxe"
+    items:
+      - material: DIAMOND_PICKAXE
+        amount: 1
+        name: "&c&lSanta's Pickaxe"
+        lore:
+          - "&7Digs through snow and stone alike."
+        enchantments:
+          efficiency: 5
+          fortune: 3
+          unbreaking: 3
+  day-17:
+    name: "Ender Pearls + 10 Levels"
+    items:
+      - material: ENDER_PEARL
+        amount: 16
+    commands:
+      - "xp add %player% 10 levels"
+  day-18:
+    name: "2 Totems of Undying"
+    items:
+      - material: TOTEM_OF_UNDYING
+        amount: 2
+    effects:
+      particles:
+        type: TOTEM_OF_UNDYING
+        count: 80
+  day-19:
+    name: "Ancient Debris"
+    items:
+      - material: ANCIENT_DEBRIS
+        amount: 4
+  day-20:
+    name: "Lots of XP"
+    items:
+      - material: EXPERIENCE_BOTTLE
+        amount: 64
+  day-21:
+    name: "Reindeer Chestplate"
+    items:
+      - material: DIAMOND_CHESTPLATE
+        amount: 1
+        name: "&6&lReindeer Chestplate"
+        enchantments:
+          protection: 4
+          unbreaking: 3
+        flags:
+          - HIDE_ATTRIBUTES
+  day-22:
+    name: "2 Enchanted Golden Apples"
+    items:
+      - material: ENCHANTED_GOLDEN_APPLE
+        amount: 2
+  day-23:
+    name: "Netherite & Totem"
+    items:
+      - material: NETHERITE_INGOT
+        amount: 2
+      - material: TOTEM_OF_UNDYING
+        amount: 1
+  day-24:
+    name: "The Christmas Eve Bundle"
+    lore:
+      - "&7The biggest present of all!"
+    items:
+      - material: NETHERITE_SWORD
+        amount: 1
+        name: "<gradient:#00B2FF:#FFFFFF><bold>Northern Star</bold></gradient>"
+        lore:
+          - "&7The ultimate Christmas blade."
+        enchantments:
+          sharpness: 5
+          unbreaking: 3
+          mending: 1
+          looting: 3
+          fire_aspect: 2
+      - material: NETHERITE_INGOT
+        amount: 3
+      - material: TOTEM_OF_UNDYING
+        amount: 2
+    commands:
+      - "give %player% minecraft:elytra 1"
+    effects:
+      sound:
+        type: UI_TOAST_CHALLENGE_COMPLETE
+        volume: 1.0
+        pitch: 1.0
+      particles:
+        type: FIREWORK
+        count: 120
+        offset: 1.0
+        speed: 0.1
+      title:
+        title: "<gradient:#00B2FF:#FFFFFF><bold>MERRY CHRISTMAS!</bold></gradient>"
+        subtitle: "&7You opened the last door!"
+        fade-in: 10
+        stay: 70
+        fade-out: 20
+      broadcast:
+        message: "%prefix%&f%player% &7opened the &#00B2FF&lChristmas Eve &7door!"
+      firework:
+        type: STAR
+        colors: ["#00B2FF", "#FFFFFF", "#FF0000"]
+        fade-colors: ["#00A6FC"]
+        trail: true
+        flicker: true
+
+# Optional per-day settings: style, permission, unlock (date override) and appearance overrides.
+day-settings:
+  6:
+    style: special
+  12:
+    style: special
+  18:
+    style: special
+  24:
+    style: premium
+
+# ---------------------------------------------------------------- effects
+# open, close, claim, locked, already-claimed, closed. Every part can be disabled with enabled: false
+effects:
+  open:
+    sound:
+      type: BLOCK_CHEST_OPEN
+      volume: 0.6
+      pitch: 1.2
+  close:
+    sound:
+      enabled: false
+      type: BLOCK_CHEST_CLOSE
+  claim:
+    sound:
+      enabled: true
+      type: ENTITY_PLAYER_LEVELUP
+      volume: 1.0
+      pitch: 1.0
+    particles:
+      enabled: true
+      type: SNOWFLAKE
+      count: 40
+      offset: 0.6
+      speed: 0.02
+    title:
+      enabled: true
+      title: "&#00B2FF&lREWARD CLAIMED!"
+      subtitle: "&7You claimed Day %day%"
+    actionbar:
+      enabled: true
+      message: "&7Claimed &f%days_claimed%&7/&f%days_total% &7doors"
+  locked:
+    sound:
+      type: BLOCK_NOTE_BLOCK_BASS
+      volume: 0.8
+      pitch: 0.6
+  already-claimed:
+    sound:
+      type: ENTITY_VILLAGER_NO
+      volume: 0.6
+      pitch: 1.0
+  closed:
+    sound:
+      type: BLOCK_NOTE_BLOCK_BASS
+      pitch: 0.5
+
+# ---------------------------------------------------------------- messages (optional overrides)
+messages:
+  reward-claimed: "%prefix%&7You opened door &aDay %day%&7: &f%reward_name%&7! &8(&f%days_claimed%&7/&f%days_total%&8)"
+  calendar-not-open-yet: "%prefix%&7The Christmas calendar opens in &f%opens_in%&7! Come back on 1 December."
+
+# ---------------------------------------------------------------- custom menus (OPEN_MENU:<name>)
+menus:
+  information:
+    title: "&#00B2FF&lCALENDAR INFORMATION"
+    size: 27
+    background:
+      enabled: true
+      material: BLACK_STAINED_GLASS_PANE
+      name: " "
+    items:
+      about:
+        slot: 11
+        material: SPRUCE_SAPLING
+        name: "%calendar_name%"
+        lore:
+          - "%calendar_description%"
+          - ""
+          - "&7Opens: &f%opens_at%"
+          - "&7Last day to claim: &f%closes_at%"
+          - "&7Timezone: &f%timezone%"
+      how:
+        slot: 13
+        material: OAK_SIGN
+        name: "&#00B2FF&lHOW IT WORKS"
+        lore:
+          - "&7Every day at midnight a new"
+          - "&7door opens. Click it to claim!"
+          - ""
+          - "&7Missed a day? You can still"
+          - "&7claim it until 26 December."
+          - ""
+          - "&7Full inventory? Your reward is"
+          - "&7stored: &f/calendar collect"
+      next:
+        slot: 15
+        material: CLOCK
+        name: "&#00B2FF&lNEXT DOOR"
+        lore:
+          - "&7Day &f%next_day% &7opens in &f%next_unlock%"
+          - "&7(%next_unlock_date%)"
+      back:
+        slot: 22
+        material: ARROW
+        name: "&7« Back to the calendar"
+        actions:
+          - "OPEN_MENU:calendar"
