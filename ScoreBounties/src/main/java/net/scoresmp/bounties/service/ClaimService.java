@@ -130,6 +130,7 @@ public final class ClaimService {
                     Delivery delivery = deliverAll(current);
                     if (!delivery.nothingDelivered()) {
                         plugin.messages().send(current, "claim.delivered-on-join", "%amount%", delivery.deliveredItems());
+                        plugin.sound(current, "claim-success");
                     }
                     if (delivery.remainingStacks() > 0) {
                         plugin.messages().send(current, "claim.waiting-on-join", "%count%", delivery.remainingStacks());

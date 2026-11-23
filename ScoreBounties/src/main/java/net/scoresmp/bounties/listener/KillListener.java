@@ -46,6 +46,7 @@ public final class KillListener implements Listener {
         if (reason != null) {
             plugin.debug(killer.getName() + " cannot claim the bounty on " + victim.getName() + ": " + reason);
             plugin.messages().send(killer, "reward.not-eligible", "%target%", victim.getName(), "%reason%", reason);
+            plugin.sound(killer, "error");
             return;
         }
         plugin.bounties().claim(killer, victim.getUniqueId(), victim.getName(), victim.getLocation());

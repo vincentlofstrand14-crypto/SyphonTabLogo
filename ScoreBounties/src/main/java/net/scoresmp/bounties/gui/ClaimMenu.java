@@ -32,14 +32,15 @@ public final class ClaimMenu extends Menu {
     }
 
     @Override
-    public void open() {
+    protected boolean show() {
         ClaimService.Cache cache = plugin.claims().cache(viewer.getUniqueId());
         if (cache == null || !cache.loaded()) {
             plugin.messages().send(viewer, "general.not-loaded");
-            return;
+            return false;
         }
         build(cache);
         viewer.openInventory(inventory);
+        return true;
     }
 
     private void build(ClaimService.Cache cache) {
@@ -62,7 +63,7 @@ public final class ClaimMenu extends Menu {
     private void reopen() {
         plugin.later(1, () -> {
             if (viewer.isOnline() && Menu.openMenu(viewer) == this) {
-                open();
+                show();
             }
         });
     }
@@ -86,7 +87,7 @@ public final class ClaimMenu extends Menu {
         int start = page * perPage;
         for (int i = 0; i < perPage && start + i < claims.size(); i++) {
             PendingClaim claim = claims.get(start + i);
-            button(slots.get(i), display(claim, extra), event -> claimOne(claim.id()));
+            button(slots.get(i), display(claim, extra), null, event -> claimOne(claim.id()));
         }
 
         int total = cache == null ? 0 : cache.totalAmount();
@@ -94,21 +95,21 @@ public final class ClaimMenu extends Menu {
         button(info.slot(), info.build("%claims%", claims.size(), "%amount%", total), null);
 
         GuiConfig.Button all = gui().button("claim-menu.buttons.claim-all");
-        button(all.slot(), all.build(), event -> claimAll());
+        button(all.slot(), all.build(), null, event -> claimAll());
 
         GuiConfig.Button close = gui().button("claim-menu.buttons.close");
         button(close.slot(), close.build(), event -> closeLater());
 
         if (page > 0) {
             GuiConfig.Button previous = gui().button("claim-menu.buttons.previous-page");
-            button(previous.slot(), previous.build("%target_page%", page), event -> {
+            button(previous.slot(), previous.build("%target_page%", page), "gui-page", event -> {
                 page--;
                 reopen();
             });
         }
         if (page < pages - 1) {
             GuiConfig.Button next = gui().button("claim-menu.buttons.next-page");
-            button(next.slot(), next.build("%target_page%", page + 2), event -> {
+            button(next.slot(), next.build("%target_page%", page + 2), "gui-page", event -> {
                 page++;
                 reopen();
             });
@@ -139,8 +140,10 @@ public final class ClaimMenu extends Menu {
         }
         if (delivery.nothingDelivered()) {
             plugin.messages().send(viewer, "claim.inventory-full");
+            plugin.sound(viewer, "error");
         } else {
             plugin.messages().send(viewer, "claim.success", "%amount%", delivery.deliveredItems());
+            plugin.sound(viewer, "claim-success");
         }
         reopen();
     }
@@ -149,6 +152,7 @@ public final class ClaimMenu extends Menu {
         ClaimService.Cache cache = plugin.claims().cache(viewer.getUniqueId());
         if (cache != null && cache.loaded() && cache.size() == 0) {
             plugin.messages().send(viewer, "claim.no-items");
+            plugin.sound(viewer, "error");
             return;
         }
         ClaimService.Delivery delivery = plugin.claims().deliverAll(viewer);
@@ -158,11 +162,14 @@ public final class ClaimMenu extends Menu {
         }
         if (delivery.nothingDelivered()) {
             plugin.messages().send(viewer, "claim.inventory-full");
+            plugin.sound(viewer, "error");
         } else if (delivery.remainingStacks() > 0) {
             plugin.messages().send(viewer, "claim.partial", "%amount%", delivery.deliveredItems(),
                     "%remaining%", delivery.remainingStacks());
+            plugin.sound(viewer, "claim-success");
         } else {
             plugin.messages().send(viewer, "claim.success", "%amount%", delivery.deliveredItems());
+            plugin.sound(viewer, "claim-success");
         }
         reopen();
     }

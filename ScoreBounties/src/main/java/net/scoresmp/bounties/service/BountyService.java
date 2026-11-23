@@ -299,6 +299,7 @@ public final class BountyService {
                         return; // delivered on next join
                     }
                     plugin.messages().send(online, "reward.received", "%target%", victimName, "%amount%", amount);
+                    plugin.sound(online, "reward-received");
                     List<Long> ids = new ArrayList<>();
                     for (PendingClaim reward : rewards) {
                         ids.add(reward.id());

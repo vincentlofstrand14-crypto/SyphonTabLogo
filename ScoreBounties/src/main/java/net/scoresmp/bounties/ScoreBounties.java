@@ -18,6 +18,8 @@ import net.scoresmp.bounties.storage.BackupService;
 import net.scoresmp.bounties.storage.Database;
 import net.scoresmp.bounties.util.Dates;
 import net.scoresmp.bounties.util.ItemCodec;
+import net.scoresmp.bounties.util.Sounds;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.Bukkit;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.entity.Player;
@@ -42,6 +44,7 @@ public class ScoreBounties extends JavaPlugin {
     private volatile Settings settings;
     private volatile Messages messages;
     private volatile GuiConfig gui;
+    private volatile Sounds sounds;
     private ItemCodec codec;
     private Database database;
     private ClaimService claims;
@@ -142,17 +145,37 @@ public class ScoreBounties extends JavaPlugin {
             messagesFile = new ConfigFile(this, "messages.yml");
             guiFile = new ConfigFile(this, "gui.yml");
         }
-        configFile.load();
+        configFile.load(ScoreBounties::migrateConfig);
         messagesFile.load();
         guiFile.load();
         settings = new Settings(configFile.yaml(), getLogger());
         messages = new Messages(messagesFile.yaml());
         gui = new GuiConfig(guiFile.yaml(), getLogger());
+        sounds = new Sounds(configFile.yaml(), getLogger());
         Dates.configure(settings.dateFormat, settings.dateTimeFormat);
         File backupFolder = new File(getDataFolder(), "backups");
         if (!backupFolder.exists() && !backupFolder.mkdirs()) {
             getLogger().warning("Could not create " + backupFolder);
         }
+    }
+
+    /**
+     * Updates config files from older versions. Version 1 refused kills that most players
+     * expect to pay (same household IP, knock-back kills), so those two options are turned
+     * off unless they were already changed.
+     */
+    private static boolean migrateConfig(YamlConfiguration yaml) {
+        if (yaml.getKeys(false).isEmpty() || yaml.getInt("config-version", 1) >= 2) {
+            return false;
+        }
+        if (yaml.getBoolean("kill-eligibility.require-direct-kill", true)) {
+            yaml.set("kill-eligibility.require-direct-kill", false);
+        }
+        if (yaml.getBoolean("kill-eligibility.block-same-ip", true)) {
+            yaml.set("kill-eligibility.block-same-ip", false);
+        }
+        yaml.set("config-version", 2);
+        return true;
     }
 
     /** Reloads config.yml, messages.yml and gui.yml. */
@@ -204,6 +227,18 @@ public class ScoreBounties extends JavaPlugin {
 
     public GuiConfig gui() {
         return gui;
+    }
+
+    public Sounds sounds() {
+        return sounds;
+    }
+
+    /** Plays a configured feedback sound to a player. */
+    public void sound(Player player, String name) {
+        Sounds current = sounds;
+        if (current != null) {
+            current.play(player, name);
+        }
     }
 
     public ItemCodec codec() {

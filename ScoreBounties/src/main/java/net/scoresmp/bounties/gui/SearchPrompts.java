@@ -74,6 +74,9 @@ public final class SearchPrompts implements Listener {
             }
             BountyListMenu menu = new BountyListMenu(plugin, player, 0, prompt.menu().sort(), query);
             menu.open();
+            if (plugin.bounties().sorted(prompt.menu().sort(), query).isEmpty()) {
+                plugin.sound(player, "error");
+            }
         });
     }
 

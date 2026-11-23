@@ -210,7 +210,7 @@ class BountyFlowTest {
         victim.killer = killer;
         DamageSource source = (DamageSource) Proxy.newProxyInstance(getClass().getClassLoader(),
                 new Class<?>[]{DamageSource.class}, (proxy, method, args) -> switch (method.getName()) {
-                    case "getCausingEntity", "getDirectEntity" -> direct ? (Entity) killer : null;
+                    case "getCausingEntity", "getDirectEntity" -> direct && killer != null ? (Entity) killer : null;
                     case "isIndirect" -> false;
                     case "hashCode" -> System.identityHashCode(proxy);
                     case "equals" -> proxy == args[0];
@@ -247,6 +247,10 @@ class BountyFlowTest {
              Statement s = c.createStatement(); ResultSet rs = s.executeQuery(sql)) {
             return rs.next() ? rs.getLong(1) : 0;
         }
+    }
+
+    private static boolean heard(PlayerMock player, String sound) {
+        return player.getHeardSounds().stream().anyMatch(heard -> heard.getSound().equals(sound));
     }
 
     private static boolean saw(List<String> messages, String text) {
@@ -482,7 +486,53 @@ class BountyFlowTest {
     }
 
     @Test
+    void defaultSettingsPayKnockbackKillsAndSameHouseholdKills() throws Exception {
+        PlayerMock a = player("Alpha");
+        FighterMock killer = fighter("Killer");
+        FighterMock victim = fighter("Victim");
+        killer.setAddress(new InetSocketAddress("203.0.113.7", 1234));
+        victim.setAddress(new InetSocketAddress("203.0.113.7", 4321));
+        placeBounty(a, victim, diamonds(9));
+        TestSupport.messages(killer);
+        kill(victim, killer, false); // knocked into lava/void: credited to the killer by Minecraft
+        assertNull(plugin.bounties().bounty(victim.getUniqueId()));
+        assertEquals(9, count(killer, Material.DIAMOND));
+        assertTrue(saw(TestSupport.messages(killer), "You received the bounty on Victim"));
+    }
+
+    @Test
+    void deathWithoutPlayerKillerNeverPays() throws Exception {
+        PlayerMock a = player("Alpha");
+        FighterMock victim = fighter("Victim");
+        placeBounty(a, victim, diamonds(9));
+        kill(victim, null, false); // fell, lava, mob... no player credited
+        assertNotNull(plugin.bounties().bounty(victim.getUniqueId()));
+    }
+
+    @Test
+    void oldConfigIsUpdatedSoKillsPay() throws Exception {
+        File file = new File(plugin.getDataFolder(), "config.yml");
+        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
+        yaml.set("config-version", null);
+        yaml.set("kill-eligibility.require-direct-kill", true);
+        yaml.set("kill-eligibility.block-same-ip", true);
+        yaml.set("sounds", null);
+        yaml.save(file);
+        plugin.reload();
+        assertFalse(plugin.settings().requireDirectKill);
+        assertFalse(plugin.settings().blockSameIp);
+        YamlConfiguration saved = YamlConfiguration.loadConfiguration(file);
+        assertEquals(2, saved.getInt("config-version"));
+        assertTrue(saved.contains("sounds.gui-open.sound"), "new sound options are added");
+        // a server owner who turns the options back on keeps them
+        config("kill-eligibility.block-same-ip", true);
+        assertTrue(plugin.settings().blockSameIp);
+    }
+
+    @Test
     void environmentalAndIneligibleDeathsDoNotPay() throws Exception {
+        config("kill-eligibility.require-direct-kill", true);
+        config("kill-eligibility.block-same-ip", true);
         PlayerMock a = player("Alpha");
         FighterMock killer = fighter("Killer");
         FighterMock victim = fighter("Victim");
@@ -918,5 +968,59 @@ class BountyFlowTest {
             }
         }
         return -1;
+    }
+
+    @Test
+    void menusAndActionsPlaySounds() throws Exception {
+        config("restrictions.allow-offline-targets", true);
+        PlayerMock a = player("Alpha");
+        FighterMock killer = fighter("Killer");
+        FighterMock victim = fighter("Victim");
+        for (int i = 0; i < 46; i++) {
+            server.addPlayer("S" + i);
+        }
+        settle();
+
+        a.performCommand("bounty");
+        assertTrue(heard(a, "minecraft:block.ender_chest.open"), "open sound");
+        click(a, 51, ClickType.LEFT, InventoryAction.PICKUP_ALL); // refresh
+        settle();
+        assertTrue(heard(a, "minecraft:block.amethyst_block.chime"), "refresh sound");
+        Thread.sleep(200);
+        click(a, 47, ClickType.LEFT, InventoryAction.PICKUP_ALL); // sort oldest
+        settle();
+        assertTrue(heard(a, "minecraft:block.note_block.hat"), "sort sound");
+        a.closeInventory();
+
+        openDeposit(a, victim, false);
+        confirm(a); // empty
+        assertTrue(heard(a, "minecraft:entity.villager.no"), "error sound");
+        a.getInventory().setItem(0, diamonds(4));
+        shiftIn(a, 0);
+        settle();
+        assertTrue(heard(a, "minecraft:entity.item.pickup"), "item placed sound");
+        Thread.sleep(200);
+        confirm(a);
+        assertTrue(heard(a, "minecraft:entity.player.levelup"), "deposit success sound");
+
+        killer.clearSounds();
+        kill(victim, killer, true);
+        assertTrue(heard(killer, "minecraft:entity.player.levelup"), "reward sound");
+
+        // pages
+        for (int i = 0; i < 46; i++) {
+            placeBounty(a, server.getPlayerExact("S" + i), diamonds(1));
+        }
+        a.clearSounds();
+        a.performCommand("bounty");
+        Thread.sleep(200);
+        click(a, 53, ClickType.LEFT, InventoryAction.PICKUP_ALL);
+        settle();
+        assertTrue(heard(a, "minecraft:item.book.page_turn"), "page sound");
+
+        config("sounds.enabled", false);
+        a.clearSounds();
+        a.performCommand("bounty");
+        assertTrue(a.getHeardSounds().isEmpty(), "sounds can be turned off");
     }
 }

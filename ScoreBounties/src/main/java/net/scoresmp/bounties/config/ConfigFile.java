@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Predicate;
 import java.util.logging.Level;
 
 /**
@@ -26,6 +27,14 @@ public final class ConfigFile {
     }
 
     public void load() {
+        load(null);
+    }
+
+    /**
+     * Loads the file. {@code migrate} sees the file as written on disk (before defaults are
+     * merged) and returns true if it changed something that must be saved.
+     */
+    public void load(Predicate<YamlConfiguration> migrate) {
         File file = new File(plugin.getDataFolder(), name);
         if (!file.exists()) {
             plugin.saveResource(name, false);
@@ -37,6 +46,7 @@ public final class ConfigFile {
             plugin.getLogger().log(Level.SEVERE, "Could not read " + name + ", using the default values.", exception);
             loaded = new YamlConfiguration();
         }
+        boolean migrated = migrate != null && migrate.test(loaded);
         try (InputStream stream = plugin.getResource(name)) {
             if (stream != null) {
                 YamlConfiguration defaults = YamlConfiguration.loadConfiguration(
@@ -49,7 +59,7 @@ public final class ConfigFile {
                     }
                 }
                 loaded.setDefaults(defaults);
-                if (missing) {
+                if (missing || migrated) {
                     loaded.options().copyDefaults(true);
                     try {
                         loaded.save(file);

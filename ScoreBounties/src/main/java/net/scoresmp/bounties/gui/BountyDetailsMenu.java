@@ -38,18 +38,20 @@ public final class BountyDetailsMenu extends Menu {
     }
 
     @Override
-    public void open() {
+    protected boolean show() {
         Bounty bounty = plugin.bounties().bounty(targetId);
         if (bounty == null) {
             plugin.messages().send(viewer, "general.no-active-bounty", "%player%", "?");
+            plugin.sound(viewer, "error");
             if (parent != null) {
                 parent.open();
             }
-            return;
+            return false;
         }
         create(gui().string("details-menu.title", "%target%", bounty.targetName()));
         render();
         viewer.openInventory(inventory);
+        return true;
     }
 
     private Set<Integer> buttonSlots() {
@@ -67,7 +69,7 @@ public final class BountyDetailsMenu extends Menu {
         decorate();
         Bounty bounty = plugin.bounties().bounty(targetId);
         GuiConfig.Button back = gui().button("details-menu.buttons.back");
-        button(back.slot(), back.build(), event -> openLater(parent != null ? parent : new BountyListMenu(plugin, viewer)));
+        button(back.slot(), back.build(), null, event -> openLater(parent != null ? parent : new BountyListMenu(plugin, viewer)));
         if (bounty == null) {
             return;
         }
@@ -131,26 +133,27 @@ public final class BountyDetailsMenu extends Menu {
 
         if (page > 0) {
             GuiConfig.Button previous = gui().button("details-menu.buttons.previous-page");
-            button(previous.slot(), previous.build("%target_page%", page), event -> {
+            button(previous.slot(), previous.build("%target_page%", page), "gui-page", event -> {
                 page--;
                 render();
             });
         }
         if (page < pages - 1) {
             GuiConfig.Button next = gui().button("details-menu.buttons.next-page");
-            button(next.slot(), next.build("%target_page%", page + 2), event -> {
+            button(next.slot(), next.build("%target_page%", page + 2), "gui-page", event -> {
                 page++;
                 render();
             });
         }
         if (viewer.hasPermission("scorebounties.add") && !viewer.getUniqueId().equals(targetId)) {
             GuiConfig.Button add = gui().button("details-menu.buttons.add");
-            button(add.slot(), add.build("%target%", target), event -> plugin.later(1, () -> {
+            button(add.slot(), add.build("%target%", target), null, event -> plugin.later(1, () -> {
                 if (!viewer.isOnline()) {
                     return;
                 }
                 if (!plugin.settings().allowOfflineTargets && org.bukkit.Bukkit.getPlayer(targetId) == null) {
                     plugin.messages().send(viewer, "general.player-offline", "%player%", target);
+                    plugin.sound(viewer, "error");
                     return;
                 }
                 plugin.deposits().open(viewer, targetId, target, false);

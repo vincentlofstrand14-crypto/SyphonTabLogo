@@ -100,8 +100,8 @@ public final class Settings {
         allowSelfBounty = c.getBoolean("self-bounty.allow", false);
 
         requireClaimPermission = c.getBoolean("kill-eligibility.require-claim-permission", true);
-        requireDirectKill = c.getBoolean("kill-eligibility.require-direct-kill", true);
-        blockSameIp = c.getBoolean("kill-eligibility.block-same-ip", true);
+        requireDirectKill = c.getBoolean("kill-eligibility.require-direct-kill", false);
+        blockSameIp = c.getBoolean("kill-eligibility.block-same-ip", false);
         sameIpIgnoreLocal = c.getBoolean("kill-eligibility.same-ip-ignore-local", true);
         minimumKillerPlaytimeMinutes = Math.max(0, c.getInt("kill-eligibility.minimum-killer-playtime-minutes", 0));
         disabledClaimWorlds = lower(c.getStringList("kill-eligibility.disabled-worlds"));

@@ -40,10 +40,12 @@ public final class DepositService {
     public boolean open(Player player, UUID targetId, String targetName, boolean replace) {
         Settings settings = plugin.settings();
         if (!canUseHere(player)) {
+            plugin.sound(player, "error");
             return false;
         }
         if (targetId.equals(player.getUniqueId()) && !settings.allowSelfBounty) {
             plugin.messages().send(player, "general.self-bounty-blocked");
+            plugin.sound(player, "error");
             return false;
         }
         DepositMenu menu = new DepositMenu(plugin, this, player, targetId, targetName, replace);
@@ -133,6 +135,7 @@ public final class DepositService {
                 .whenComplete((hadBounty, error) -> plugin.sync(() -> {
                     if (error != null) {
                         plugin.messages().send(player, "deposit.failed");
+                        plugin.sound(player, "error");
                         returnItems(player, menu.sessionId(), targetName, items, true);
                         return;
                     }
@@ -144,6 +147,7 @@ public final class DepositService {
                     String path = menu.replace() && hadBounty ? "deposit.replaced"
                             : hadBounty ? "deposit.updated" : "deposit.placed";
                     plugin.messages().send(player, path, "%target%", targetName, "%amount%", amount);
+                    plugin.sound(player, "deposit-success");
                     if (plugin.settings().announcePlaced) {
                         plugin.messages().broadcast("messages.bounty-placed", "%player%", player.getName(), "%target%", targetName);
                         plugin.bounties().playSound(plugin.settings().soundPlaced);

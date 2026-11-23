@@ -3,6 +3,9 @@
 #   Physical items only. There is no economy and no money.
 # ==========================================================
 
+# Do not change. Used to update older config files automatically.
+config-version: 2
+
 # Print extra information to the console (transactions, eligibility checks).
 debug: false
 
@@ -52,18 +55,19 @@ self-bounty:
   allow: false
 
 kill-eligibility:
-  # The killer needs scorebounties.claim to receive bounty rewards.
+  # The killer needs scorebounties.claim to receive bounty rewards (everyone has it by default).
   require-claim-permission: true
-  # Only reward kills where the killer dealt the final damage (melee, projectile,
-  # end crystal, explosion they caused). Prevents rewarding deaths to fall damage,
-  # lava, the void and other environmental causes after a fight.
-  require-direct-kill: true
-  # Block rewards when killer and victim are connected from the same IP address
-  # (detects alternate accounts claiming a bounty).
-  block-same-ip: true
+  # false (default): every kill Minecraft credits to a player pays the bounty - melee,
+  #   bows, crystals, and knocking someone into lava/the void/off a cliff during a fight.
+  # true: only pay when the killer dealt the final hit themselves.
+  # Deaths with no player involved (lava, fall, mobs...) never pay a bounty.
+  require-direct-kill: false
+  # Block rewards when killer and victim connect from the same IP address, to stop
+  # players claiming their own bounty with an alt account. Off by default because
+  # friends or family playing from the same home share an IP address.
+  block-same-ip: false
   # Skip the IP check when an address is local (127.x, 192.168.x, 10.x ...). Behind a
-  # proxy without IP forwarding every player shares the proxy's local address, which
-  # would otherwise block every claim. Enable IP forwarding on your proxy for this check.
+  # proxy without IP forwarding every player shares the proxy's local address.
   same-ip-ignore-local: true
   # Minimum total playtime the killer must have, in minutes (0 = disabled).
   minimum-killer-playtime-minutes: 0
@@ -103,3 +107,21 @@ announcements:
 leaderboard:
   # Number of entries shown by /bounty top.
   size: 10
+
+# Sounds played to the player using the menus. Use any Minecraft sound id
+# (https://minecraft.wiki/w/Sounds.json). Set sound to "" to turn one off.
+sounds:
+  enabled: true
+  gui-open:          { sound: "minecraft:block.ender_chest.open", volume: 0.5, pitch: 1.4 }
+  gui-click:         { sound: "minecraft:ui.button.click", volume: 0.4, pitch: 1.2 }
+  gui-page:          { sound: "minecraft:item.book.page_turn", volume: 1.0, pitch: 1.0 }
+  gui-refresh:       { sound: "minecraft:block.amethyst_block.chime", volume: 1.0, pitch: 1.2 }
+  gui-sort:          { sound: "minecraft:block.note_block.hat", volume: 0.8, pitch: 1.5 }
+  gui-search:        { sound: "minecraft:block.note_block.chime", volume: 0.8, pitch: 1.6 }
+  deposit-item:      { sound: "minecraft:entity.item.pickup", volume: 0.3, pitch: 1.3 }
+  deposit-success:   { sound: "minecraft:entity.player.levelup", volume: 0.7, pitch: 1.4 }
+  deposit-cancel:    { sound: "minecraft:block.chest.close", volume: 0.6, pitch: 1.0 }
+  replace-warning:   { sound: "minecraft:block.note_block.bass", volume: 1.0, pitch: 0.6 }
+  claim-success:     { sound: "minecraft:entity.item.pickup", volume: 0.8, pitch: 0.9 }
+  reward-received:   { sound: "minecraft:entity.player.levelup", volume: 1.0, pitch: 1.0 }
+  error:             { sound: "minecraft:entity.villager.no", volume: 0.7, pitch: 1.0 }

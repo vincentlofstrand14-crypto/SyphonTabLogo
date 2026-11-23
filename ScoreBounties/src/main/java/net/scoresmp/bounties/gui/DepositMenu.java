@@ -115,7 +115,7 @@ public final class DepositMenu extends Menu {
         buttonSlots.add(confirm.slot());
         depositSlots = contentSlots(buttonSlots);
         decorate();
-        button(cancel.slot(), cancel.build(), event -> cancel());
+        button(cancel.slot(), cancel.build(), null, event -> cancel());
         renderInfo();
         renderConfirm();
     }
@@ -139,7 +139,7 @@ public final class DepositMenu extends Menu {
     private void renderConfirm() {
         GuiConfig.Button confirm = confirmButton();
         button(confirm.slot(), confirm.build("%target%", targetName, "%deposit_amount%", Items.totalAmount(contents())),
-                event -> confirm());
+                null, event -> confirm());
     }
 
     // ------------------------------------------------------------------
@@ -186,6 +186,7 @@ public final class DepositMenu extends Menu {
             ItemStack incoming = incomingItem(event);
             if (incoming != null && service.isBlacklisted(incoming)) {
                 event.setCancelled(true);
+                plugin.sound(viewer, "error");
                 plugin.messages().send(viewer, "deposit.blacklisted-item", "%item%", Items.displayName(incoming));
                 return;
             }
@@ -222,6 +223,7 @@ public final class DepositMenu extends Menu {
             return;
         }
         if (service.isBlacklisted(moving)) {
+            plugin.sound(viewer, "error");
             plugin.messages().send(viewer, "deposit.blacklisted-item", "%item%", Items.displayName(moving));
             return;
         }
@@ -287,6 +289,7 @@ public final class DepositMenu extends Menu {
         if (touchesTop) {
             if (service.isBlacklisted(event.getOldCursor())) {
                 event.setCancelled(true);
+                plugin.sound(viewer, "error");
                 plugin.messages().send(viewer, "deposit.blacklisted-item", "%item%", Items.displayName(event.getOldCursor()));
                 return;
             }
@@ -312,8 +315,11 @@ public final class DepositMenu extends Menu {
         state = State.DONE;
         List<ItemStack> items = takeContents();
         service.returnItems(viewer, sessionId, targetName, items, deliverNow);
-        if (!items.isEmpty() && deliverNow) {
-            plugin.messages().send(viewer, "deposit.cancelled");
+        if (deliverNow) {
+            plugin.sound(viewer, "deposit-cancel");
+            if (!items.isEmpty()) {
+                plugin.messages().send(viewer, "deposit.cancelled");
+            }
         }
         service.forget(this);
     }
@@ -333,10 +339,12 @@ public final class DepositMenu extends Menu {
         List<ItemStack> items = contents();
         if (items.isEmpty()) {
             plugin.messages().send(viewer, "deposit.empty");
+            plugin.sound(viewer, "error");
             return;
         }
         String problem = service.validateConfirm(viewer, this, items);
         if (problem != null) {
+            plugin.sound(viewer, "error");
             if (problem.equals(DepositService.TARGET_INVALID)) {
                 plugin.messages().send(viewer, "deposit.target-invalid-now");
                 closeLater();
@@ -348,6 +356,7 @@ public final class DepositMenu extends Menu {
             armedUntil = System.currentTimeMillis() + seconds * 1000L;
             renderConfirm();
             plugin.messages().send(viewer, "deposit.replace-confirm", "%seconds%", seconds);
+            plugin.sound(viewer, "replace-warning");
             plugin.later(seconds * 20L + 1, () -> {
                 if (state == State.OPEN && System.currentTimeMillis() >= armedUntil) {
                     renderConfirm();
@@ -413,6 +422,7 @@ public final class DepositMenu extends Menu {
             }
             service.journal(viewer.getUniqueId(), sessionId, targetName, snapshot);
             renderConfirm();
+            plugin.sound(viewer, "deposit-item");
         });
     }
 }

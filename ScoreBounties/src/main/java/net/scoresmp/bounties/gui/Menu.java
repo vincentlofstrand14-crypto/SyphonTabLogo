@@ -34,6 +34,7 @@ public abstract class Menu implements InventoryHolder {
     protected final String key;
     protected Inventory inventory;
     private final Map<Integer, Consumer<InventoryClickEvent>> buttons = new HashMap<>();
+    private final Map<Integer, String> buttonSounds = new HashMap<>();
     private long lastClick;
 
     protected Menu(ScoreBounties plugin, Player viewer, String key) {
@@ -64,9 +65,18 @@ public abstract class Menu implements InventoryHolder {
         inventory = Bukkit.createInventory(this, rows() * 9, Text.item(title));
     }
 
+    /** Opens the menu with the "gui-open" sound. */
     public void open() {
+        if (show()) {
+            plugin.sound(viewer, "gui-open");
+        }
+    }
+
+    /** Renders and shows the menu without a sound. Returns false if it could not be shown. */
+    protected boolean show() {
         render();
         viewer.openInventory(inventory);
+        return true;
     }
 
     /** Fills the inventory. */
@@ -74,17 +84,30 @@ public abstract class Menu implements InventoryHolder {
 
     protected void clearButtons() {
         buttons.clear();
+        buttonSounds.clear();
     }
 
+    /** A button that plays the "gui-click" sound. */
     protected void button(int slot, ItemStack item, Consumer<InventoryClickEvent> action) {
+        button(slot, item, "gui-click", action);
+    }
+
+    /** A button with its own sound (null = no sound, e.g. when the action opens a menu). */
+    protected void button(int slot, ItemStack item, String sound, Consumer<InventoryClickEvent> action) {
         if (slot < 0 || slot >= inventory.getSize()) {
             return;
         }
         inventory.setItem(slot, item);
         if (action != null) {
             buttons.put(slot, action);
+            if (sound != null) {
+                buttonSounds.put(slot, sound);
+            } else {
+                buttonSounds.remove(slot);
+            }
         } else {
             buttons.remove(slot);
+            buttonSounds.remove(slot);
         }
     }
 
@@ -111,6 +134,7 @@ public abstract class Menu implements InventoryHolder {
         for (int slot = start; slot < inventory.getSize(); slot++) {
             inventory.setItem(slot, filler.clone());
             buttons.remove(slot);
+            buttonSounds.remove(slot);
         }
         ItemStack accent = gui().accent();
         for (int slot : gui().accentSlots(key)) {
@@ -134,6 +158,7 @@ public abstract class Menu implements InventoryHolder {
             return;
         }
         lastClick = now;
+        plugin.sound(viewer, buttonSounds.get(event.getRawSlot()));
         action.accept(event);
     }
 

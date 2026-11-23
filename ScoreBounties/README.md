@@ -78,7 +78,9 @@ If anything fails, the items are returned. Cancelling or closing the menu return
 `/bounty set <player>` uses the same menu. If the target already has a bounty, a chat warning is shown, the confirm button turns orange, and it must be clicked **twice** (within `gui.replace-confirm-seconds`). The old contributions and the new one are swapped in a single transaction. Each previous contributor gets their own items back, or later via `/bounty claim` if they are offline.
 
 ### Claiming
-When a player kills a bounty target, the plugin first checks eligibility (see `kill-eligibility` / `anti-farming` in config.yml). It then removes the bounty from memory, which is the atomic "claim", so only one kill can ever win it. It writes the payout in one transaction that verifies every row is still active. Then it gives the killer the exact stored items: enchantments, names, lore, flags, damage, potion data, custom model data, PDC and all other data components are preserved.
+Any kill that Minecraft credits to a player pays the bounty: melee, bows, crystals, and knocking the target into lava, the void or off a cliff during a fight. Deaths with no player involved never pay. Optional stricter rules are in `kill-eligibility`: `require-direct-kill` (final hit only) and `block-same-ip` (alt-account check). Both are off by default; config files from version 1 are updated automatically. The same killer cannot claim another bounty on the same victim for `anti-farming.repeat-kill-cooldown-minutes` (default 30).
+
+When a player kills a bounty target, the plugin first checks eligibility. It then removes the bounty from memory, which is the atomic "claim", so only one kill can ever win it. It writes the payout in one transaction that verifies every row is still active. Then it gives the killer the exact stored items: enchantments, names, lore, flags, damage, potion data, custom model data, PDC and all other data components are preserved.
 
 Anything that does not fit in the killer's inventory stays in `/bounty claim`. Nothing is ever dropped on the ground. A killer who disconnects receives the reward on their next join.
 
@@ -104,6 +106,9 @@ The deposit menu allows only a whitelist of vanilla actions, and only on deposit
   - `bounty-placed`: `%player%`, `%target%`
   - `bounty-claimed`: `%killer%`, `%target%`
 - `help` and `admin-help` are lists; add or remove lines freely.
+
+## Sounds (`config.yml` → `sounds:`)
+Every menu action has a sound: opening a menu, button clicks, page turns, refresh, sorting, search, placing items in the deposit menu, deposit success/cancel, the replace warning, claiming items, receiving a bounty reward, and errors. Each entry is `{ sound, volume, pitch }` with any Minecraft sound id. Set `sound: ""` to mute one entry, or `sounds.enabled: false` to mute all. The broadcast sounds for placed/claimed bounties are under `announcements.sound`.
 
 ## Configuring menus (`gui.yml`)
 - Each menu (`main-menu`, `details-menu`, `deposit-menu`, `claim-menu`) has a `title` and `rows` (2–6). The bottom row holds the buttons; all other slots show content.
@@ -131,7 +136,7 @@ Registered automatically when PlaceholderAPI is installed:
 ---
 
 ## Tests
-`mvn test` runs 28 tests against the real plugin on a MockBukkit server, with a real SQLite database. They cover:
+`mvn test` runs 32 tests against the real plugin on a MockBukkit server, with a real SQLite database. They cover:
 - creating, adding to, replacing, cancelling and closing bounties
 - disconnecting, crashing and shutting down during a deposit
 - kills and duplicate death events
@@ -146,5 +151,7 @@ Registered automatically when PlaceholderAPI is installed:
 - admin remove, restore and clear
 - info and leaderboards
 - the exact hex announcements
+- menu and action sounds
+- updating old config files
 
 The mock server cannot run Paper's native item serializer, so the tests swap in a test codec. Test on a staging server before going live.

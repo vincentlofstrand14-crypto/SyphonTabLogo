@@ -57,9 +57,10 @@ public final class BountyListMenu extends Menu {
     }
 
     @Override
-    public void open() {
+    protected boolean show() {
         build();
         viewer.openInventory(inventory);
+        return true;
     }
 
     private void build() {
@@ -95,7 +96,7 @@ public final class BountyListMenu extends Menu {
     private void refresh() {
         plugin.later(1, () -> {
             if (viewer.isOnline()) {
-                open();
+                show();
             }
         });
     }
@@ -117,7 +118,7 @@ public final class BountyListMenu extends Menu {
         int start = page * perPage;
         for (int i = 0; i < perPage && start + i < list.size(); i++) {
             Bounty bounty = list.get(start + i);
-            button(slots.get(i), head(bounty), event -> openLater(new BountyDetailsMenu(plugin, viewer, bounty.targetId(), this)));
+            button(slots.get(i), head(bounty), null, event -> openLater(new BountyDetailsMenu(plugin, viewer, bounty.targetId(), this)));
         }
 
         String selected = gui().string("main-menu.selected-line");
@@ -125,14 +126,14 @@ public final class BountyListMenu extends Menu {
 
         if (page > 0) {
             GuiConfig.Button previous = gui().button("main-menu.buttons.previous-page");
-            button(previous.slot(), previous.build("%target_page%", page), event -> {
+            button(previous.slot(), previous.build("%target_page%", page), "gui-page", event -> {
                 page--;
                 refresh();
             });
         }
         if (page < pages - 1) {
             GuiConfig.Button next = gui().button("main-menu.buttons.next-page");
-            button(next.slot(), next.build("%target_page%", page + 2), event -> {
+            button(next.slot(), next.build("%target_page%", page + 2), "gui-page", event -> {
                 page++;
                 refresh();
             });
@@ -146,7 +147,7 @@ public final class BountyListMenu extends Menu {
                 "%total_items%", plugin.bounties().totalItems()), null);
 
         GuiConfig.Button search = gui().button("main-menu.buttons.search");
-        button(search.slot(), search.build("%query%", query == null ? gui().string("main-menu.no-query") : query), event -> {
+        button(search.slot(), search.build("%query%", query == null ? gui().string("main-menu.no-query") : query), "gui-search", event -> {
             if (event.getClick() == ClickType.RIGHT || event.getClick() == ClickType.SHIFT_RIGHT) {
                 query = null;
                 page = 0;
@@ -158,12 +159,12 @@ public final class BountyListMenu extends Menu {
         });
 
         GuiConfig.Button refresh = gui().button("main-menu.buttons.refresh");
-        button(refresh.slot(), refresh.build(), event -> refresh());
+        button(refresh.slot(), refresh.build(), "gui-refresh", event -> refresh());
 
         if (viewer.hasPermission("scorebounties.claim")) {
             ClaimService.Cache cache = plugin.claims().cache(viewer.getUniqueId());
             GuiConfig.Button claims = gui().button("main-menu.buttons.claims");
-            button(claims.slot(), claims.build("%claims%", cache == null ? 0 : cache.size()),
+            button(claims.slot(), claims.build("%claims%", cache == null ? 0 : cache.size()), null,
                     event -> openLater(new ClaimMenu(plugin, viewer, 0)));
         }
     }
@@ -176,7 +177,7 @@ public final class BountyListMenu extends Menu {
                 meta.setEnchantmentGlintOverride(true);
             }
         }, "%selected%", active ? selected : notSelected);
-        button(config.slot(), item, event -> {
+        button(config.slot(), item, "gui-sort", event -> {
             if (sort != mode) {
                 sort = mode;
                 page = 0;
